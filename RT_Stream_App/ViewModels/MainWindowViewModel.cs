@@ -2,6 +2,7 @@
 using RT_Stream_App.Classes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,25 +20,14 @@ namespace RT_Stream_App.ViewModels
 
         public companies.APIData siteList => loadCompanies();
 
-        public string Greeting => TestLoop(siteList); //siteList.data[2].attributes.name;
+        //public string Greeting => TestLoop(siteList);
+        public ObservableCollection<companies.companyData> CompanyList => siteList.data;
 
         public companies.APIData loadCompanies()
         {
             // This takes the API data for companies and converts it into a useable class
             companies.APIData toReturn = JsonConvert.DeserializeObject<companies.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com/api/v1/channels"));
-            toReturn.data.RemoveAll(item => item == null);
             return toReturn;
         }
-
-        public string TestLoop(companies.APIData testObject)
-        {
-            string returnString = "";
-            foreach (var item in testObject.data)
-            {
-                returnString += item.attributes.name + "\r\n";
-            }
-            return returnString;
-        }
-
     }
 }

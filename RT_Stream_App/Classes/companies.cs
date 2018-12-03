@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace RT_Stream_App.Classes
@@ -11,40 +12,76 @@ namespace RT_Stream_App.Classes
             // Show properties
 
 
-    public class companies
+    public class companies : CallChanged
     {
         /// <summary>
         /// Root of the JSON
         /// </summary>
-        public class APIData
+        public class APIData : CallChanged
         {
-            public List<companyData> data = new List<companyData>();
-            public List<companyData> dataTrimmed;
+            private ObservableCollection<companyData> _data;
+
+            public APIData()
+            {
+                this.data = new ObservableCollection<companyData>();
+            }
+            public ObservableCollection<companyData> data {
+                get => _data;
+                set => SetField(ref _data, value);
+            }
         }
 
         /// <summary>
         /// A class that holds the data for each company (Name and link mostly)
         /// </summary>
-        public class companyData
+        public class companyData : CallChanged
         {
-            public attributeData attributes = new attributeData();
-            public linkData links = new linkData();
+            private linkData _links;
+            private attributeData _attributes;
+
+            public companyData()
+            {
+                this.attributes = new attributeData();
+                this.links = new linkData();
+            }
+
+            public attributeData attributes {
+                get => _attributes;
+                set => SetField(ref _attributes, value);
+            }
+            public linkData links
+            {
+                get => _links;
+                set => SetField(ref _links, value);
+            }
         }
 
         /// <summary>
         /// Contains the company name
         /// </summary>
-        public class attributeData
+        public class attributeData : CallChanged
         {
-            public string name;
+            private string _name;
+
+            public string name {
+                get => _name;
+                set => SetField(ref _name, value);
+            }
         }
 
         /// <summary>
         /// Contains link data for the next step
         /// </summary>
-        public class linkData
+        public class linkData : CallChanged
         {
-            public string shows;
+            private string _shows;
+
+            public string shows {
+                get => _shows;
+                set => SetField(ref _shows, value);
+            }
         }
+
+
     }
 }
