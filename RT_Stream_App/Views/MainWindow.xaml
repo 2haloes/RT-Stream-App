@@ -2,31 +2,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:RT_Stream_App.ViewModels;assembly=RT_Stream_App"
         Icon="resm:RT_Stream_App.Assets.avalonia-logo.ico"
-        Title="RT Stream App">
+        Title="RT Stream App"
+        Height="480"
+        Width="640">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
-
   <Grid>
-    <TextBlock Name="CompanyText" Text="Companies" />
-    <ListBox Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" HorizontalAlignment="Left" Width="512" Height="512" Margin="20,20,0,10" VerticalAlignment="Top">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <StackPanel DataContext="{Binding attributes}">
-            <TextBlock Text="{Binding name}" TextAlignment="Center" />
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>  -->
-    <!--
-    
-    Code for Lists base (Title then list below with data)
-    
-      <TextBlock Name="CompanyText" Text="Companies" />
-      <ListBox Items="{Binding CompanyList}" HorizontalAlignment="Left" Width="512" Height="512" Margin="20,20,0,10" VerticalAlignment="Top">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"></RowDefinition>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Grid Row="0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="7*"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+      
+      <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" />
+      <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel DataContext="{Binding attributes}">
@@ -35,7 +36,34 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+
+      <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="Companies" Margin="20,0,0,0" />
+      <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel DataContext="{Binding attributes}">
+              <TextBlock Text="{Binding title}" TextAlignment="Center" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <!--
+    
+      Code for Lists base (Title then list below with data)
+    
+        <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" />
+        <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel DataContext="{Binding attributes}">
+                <TextBlock Text="{Binding name}" TextAlignment="Center" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
     -->
+    </Grid>
   </Grid>
+  
   
 </Window>

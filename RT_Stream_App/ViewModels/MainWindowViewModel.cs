@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using RT_Stream_App.Classes;
+﻿using RT_Stream_App.Classes;
+using RT_Stream_App.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,27 +17,26 @@ namespace RT_Stream_App.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        private string _greeting;
-        private companies.companyData _selectedCompany;
-
         // use => instead of = for assigning
         // public string Greeting => "I am testing!";
 
-        public companies.APIData siteList => loadCompanies();
-        public string Greeting { get => _greeting; set => SetField(ref _greeting, value); }
-        public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); Greeting = _selectedCompany.attributes.name; } }
-        //public string Greeting => TestLoop(siteList);
-        public ObservableCollection<companies.companyData> CompanyList => siteList.data;
+        #region Companies variables
+        private companies.companyData _selectedCompany;
+        public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); ShowList = MainModel.loadShows(selectedCompany).data; } }
+        public ObservableCollection<companies.companyData> CompanyList => MainModel.loadCompanies().data;
+        #endregion
 
-        public companies.APIData loadCompanies()
-        {
-            // This takes the API data for companies and converts it into a useable class
-            companies.APIData toReturn = JsonConvert.DeserializeObject<companies.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com/api/v1/channels"));
-            return toReturn;
-        }
+        #region Shows variables
+        private shows.showData _selectedShow;
+        private ObservableCollection<shows.showData> _showList;
+
+        public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); } }
+        public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
+        #endregion
 
 
 
+        #region PropertyChanged code
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -51,5 +50,6 @@ namespace RT_Stream_App.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+        #endregion
     }
 }
