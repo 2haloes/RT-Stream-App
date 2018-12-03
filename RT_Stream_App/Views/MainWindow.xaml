@@ -8,16 +8,34 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <ListBox Items="{Binding CompanyList}" HorizontalAlignment="Left" Width="512" Height="512" Margin="20,20,0,10" VerticalAlignment="Top">
-    <ListBox.ItemTemplate>
-      <DataTemplate>
-        <StackPanel DataContext="{Binding attributes}">
-          <TextBlock Text="{Binding name}" TextAlignment="Center" />
-        </StackPanel>
-      </DataTemplate>
-    </ListBox.ItemTemplate> 
-  </ListBox>
-  <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>  -->
-  
+  <Grid>
+    <TextBlock Name="CompanyText" Text="Companies" />
+    <ListBox Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" HorizontalAlignment="Left" Width="512" Height="512" Margin="20,20,0,10" VerticalAlignment="Top">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel DataContext="{Binding attributes}">
+            <TextBlock Text="{Binding name}" TextAlignment="Center" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <!-- <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>  -->
+    <!--
+    
+    Code for Lists base (Title then list below with data)
+    
+      <TextBlock Name="CompanyText" Text="Companies" />
+      <ListBox Items="{Binding CompanyList}" HorizontalAlignment="Left" Width="512" Height="512" Margin="20,20,0,10" VerticalAlignment="Top">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel DataContext="{Binding attributes}">
+              <TextBlock Text="{Binding name}" TextAlignment="Center" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    -->
+  </Grid>
   
 </Window>

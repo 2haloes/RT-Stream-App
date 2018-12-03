@@ -6,6 +6,7 @@ using System.Text;
 
 namespace RT_Stream_App.Classes
 {
+    // This is the base class for all classes, it raises changes for changed properties (Code is confirmed working)
     public class CallChanged : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
