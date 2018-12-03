@@ -27,23 +27,28 @@
       </Grid.ColumnDefinitions>
       
       <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" />
-      <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top">
+      <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel DataContext="{Binding attributes}">
-              <TextBlock Text="{Binding name}" TextAlignment="Center" />
+            <StackPanel>
+              <TextBlock Text="{Binding attributes.name}" TextAlignment="Center" />
             </StackPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="Companies" Margin="20,0,0,0" />
-      <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top">
+      <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="{Binding ShowLoadText}" Margin="20,0,0,0" />
+      <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel DataContext="{Binding attributes}">
-              <TextBlock Text="{Binding title}" TextAlignment="Center" />
-            </StackPanel>
+            <Grid Height="64">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0" Source="{Binding included.images[5].attributes.thumbImage}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
+              <TextBlock Grid.Column="1" Text="{Binding attributes.title}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>

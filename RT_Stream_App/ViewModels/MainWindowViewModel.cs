@@ -29,11 +29,12 @@ namespace RT_Stream_App.ViewModels
         #region Shows variables
         private shows.showData _selectedShow;
         private ObservableCollection<shows.showData> _showList;
+        private string _showLoadText = "Shows";
 
+        public string ShowLoadText { get => _showLoadText; set => SetField( ref _showLoadText, value); }
         public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); } }
         public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
         #endregion
-
 
 
         #region PropertyChanged code

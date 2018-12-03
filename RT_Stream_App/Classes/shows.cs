@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Avalonia.Media.Imaging;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Net;
 using System.Text;
 
 namespace RT_Stream_App.Classes
@@ -132,12 +135,21 @@ namespace RT_Stream_App.Classes
         public class imageAttributes : CallChanged
         {
             private string _thumb;
+            private IBitmap _thumbImage;
 
-            public string thumb {
+            public string thumb
+            {
                 get => _thumb;
                 set => SetField(ref _thumb, value);
             }
+
+            public IBitmap thumbImage {
+                get => _thumbImage;
+                set => SetField(ref _thumbImage, value);
+            }
+
         }
+
 
     }
 }
