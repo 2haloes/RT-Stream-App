@@ -1,6 +1,7 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:RT_Stream_App.ViewModels;assembly=RT_Stream_App"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Icon="resm:RT_Stream_App.Assets.avalonia-logo.ico"
         Title="RT Stream App"
         Height="480"
@@ -26,7 +27,7 @@
         <ColumnDefinition Width="*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
       
-      <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" />
+      <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
       <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -37,7 +38,7 @@
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="{Binding ShowLoadText}" Margin="20,0,0,0" />
+      <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="{Binding ShowLoadText}" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
       <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -46,12 +47,13 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
               </Grid.ColumnDefinitions>
-              <Image Grid.Column="0" Source="{Binding included.images[5].attributes.thumbImage}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
+              <Image Grid.Column="0" Source="{Binding thumbImage}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
               <TextBlock Grid.Column="1" Text="{Binding attributes.title}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+      <!-- <Textblock Grid.Row="1" Grid.Column="1" Text="Loading Shows" Visablity="{Binding ShowsLoadingBool}"></Textblock> -->
       <!--
     
       Code for Lists base (Title then list below with data)

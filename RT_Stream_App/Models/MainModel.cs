@@ -21,7 +21,6 @@ namespace RT_Stream_App.Models
         public static shows.APIData loadShows(companies.companyData selectedCompany)
         {
             shows.APIData toReturn = JsonConvert.DeserializeObject<shows.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedCompany.links.shows));
-            toReturn = loadShowImages(toReturn);
             return toReturn;
         }
 
@@ -30,7 +29,14 @@ namespace RT_Stream_App.Models
             shows.APIData toReturn = showList;
             for (int i = 0; i < toReturn.data.Count - 1; i++)
             {
-                toReturn.data[i].included.images[5].attributes.thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb);
+                try
+                {
+                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb);
+                }
+                catch (Exception)
+                {
+                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb);
+                }
             }
             return toReturn;
         }

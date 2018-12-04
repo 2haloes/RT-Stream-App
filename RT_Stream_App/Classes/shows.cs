@@ -42,6 +42,7 @@ namespace RT_Stream_App.Classes
             private linkData _links;
             private attributeData _attributes;
             private includedData _included;
+            private IBitmap _thumbImage;
 
             public showData()
             {
@@ -62,6 +63,11 @@ namespace RT_Stream_App.Classes
             public includedData included {
                 get => _included;
                 set => SetField(ref _included, value);
+            }
+            public IBitmap thumbImage
+            {
+                get => _thumbImage;
+                set => SetField(ref _thumbImage, value);
             }
         }
 
@@ -135,17 +141,11 @@ namespace RT_Stream_App.Classes
         public class imageAttributes : CallChanged
         {
             private string _thumb;
-            private IBitmap _thumbImage;
 
             public string thumb
             {
                 get => _thumb;
                 set => SetField(ref _thumb, value);
-            }
-
-            public IBitmap thumbImage {
-                get => _thumbImage;
-                set => SetField(ref _thumbImage, value);
             }
 
         }
