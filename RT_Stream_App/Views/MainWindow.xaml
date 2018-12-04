@@ -3,7 +3,9 @@
         xmlns:vm="clr-namespace:RT_Stream_App.ViewModels;assembly=RT_Stream_App"
         Icon="resm:RT_Stream_App.Assets.avalonia-logo.ico"
         Title="RT Stream App"
+        MinHeight="480"
         Height="480"
+        MinWidth="640"
         Width="640">
 
   <Design.DataContext>

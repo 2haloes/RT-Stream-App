@@ -60,11 +60,13 @@ namespace RT_Stream_App.ViewModels
             ActiveUI = false;
             ShowLoadText = "Loading API";
             shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany));
+            // After this, thumbnails will display as they load
+            ShowList = tmpShows.data;
             ShowLoadText = "Loading Thumbnails";
             tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows));
             ShowsLoadingBool = false;
             ShowLoadText = "Shows";
-            ShowList = tmpShows.data;
+
             ActiveUI = true;
         }
 
