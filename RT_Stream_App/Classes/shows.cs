@@ -77,10 +77,18 @@ namespace RT_Stream_App.Classes
         public class attributeData : CallChanged
         {
             private string _title;
+            private bool _is_sponsors_only;
 
-            public string title {
+            public string title
+            {
                 get => _title;
                 set => SetField(ref _title, value);
+            }
+
+            public bool is_sponsors_only
+            {
+                get => _is_sponsors_only;
+                set => SetField(ref _is_sponsors_only, value);
             }
         }
 

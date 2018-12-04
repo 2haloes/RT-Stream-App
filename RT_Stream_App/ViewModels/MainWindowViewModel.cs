@@ -28,7 +28,12 @@ namespace RT_Stream_App.ViewModels
             ShowLoadText = "Shows";
             ShowsLoadingBool = false;
             LoadShows = new DelegateCommand(async () => await LoadShowsAsync());
+            ActiveUI = true;
         }
+        #region Global variables
+        private bool _activeUI;
+        public bool ActiveUI { get => _activeUI; set => SetField(ref _activeUI, value); }
+        #endregion
 
         #region Companies variables
         private companies.companyData _selectedCompany;
@@ -44,7 +49,7 @@ namespace RT_Stream_App.ViewModels
         private string _showLoadText;
         private bool _showsLoadingBool;
 
-        public bool ShowsLoadingBool { get => _showsLoadingBool; set => SetField( ref _showsLoadingBool, value); }
+        public bool ShowsLoadingBool { get => _showsLoadingBool; set => SetField(ref _showsLoadingBool, value); }
         public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
         public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); } }
         public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
@@ -52,7 +57,7 @@ namespace RT_Stream_App.ViewModels
 
         public async Task LoadShowsAsync()
         {
-            ShowsLoadingBool = true;
+            ActiveUI = false;
             ShowLoadText = "Loading API";
             shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany));
             ShowLoadText = "Loading Thumbnails";
@@ -60,6 +65,7 @@ namespace RT_Stream_App.ViewModels
             ShowsLoadingBool = false;
             ShowLoadText = "Shows";
             ShowList = tmpShows.data;
+            ActiveUI = true;
         }
 
         #region PropertyChanged code
