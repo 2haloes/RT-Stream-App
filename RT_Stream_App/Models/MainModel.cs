@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace RT_Stream_App.Models
 {
@@ -18,13 +19,18 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static shows.APIData loadShows(companies.companyData selectedCompany)
+        public static shows.APIData loadShows(companies.companyData selectedCompany, CancellationToken ct)
         {
             shows.APIData toReturn = JsonConvert.DeserializeObject<shows.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedCompany.links.shows));
+            // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
+            if (ct.IsCancellationRequested)
+            {
+                return null;
+            }
             return toReturn;
         }
 
-        public static shows.APIData loadShowImages(shows.APIData showList)
+        public static shows.APIData loadShowImages(shows.APIData showList, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
             for (int i = 0; i < toReturn.data.Count - 1; i++)
@@ -36,6 +42,10 @@ namespace RT_Stream_App.Models
                 catch (Exception)
                 {
                     toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb);
+                }
+                if (ct.IsCancellationRequested)
+                {
+                    return null;
                 }
             }
             return toReturn;

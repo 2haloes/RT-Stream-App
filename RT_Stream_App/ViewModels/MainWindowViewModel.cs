@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -27,17 +28,17 @@ namespace RT_Stream_App.ViewModels
         {
             ShowLoadText = "Shows";
             ShowsLoadingBool = false;
-            LoadShows = new DelegateCommand(async () => await LoadShowsAsync());
-            ActiveUI = true;
+            ShowsTokenSource = new CancellationTokenSource();
+            ShowsToken = ShowsTokenSource.Token;
+            LoadShows = new DelegateCommand(async () => await LoadShowsAsync(ShowsToken));
         }
         #region Global variables
-        private bool _activeUI;
-        public bool ActiveUI { get => _activeUI; set => SetField(ref _activeUI, value); }
+        
         #endregion
 
         #region Companies variables
         private companies.companyData _selectedCompany;
-        public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); LoadShows.Execute(null); } }
+        public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); CancelTokens(1); LoadShows.Execute(null); } }
         public ObservableCollection<companies.companyData> CompanyList => MainModel.loadCompanies().data;
 
         public ICommand LoadShows;
@@ -48,26 +49,47 @@ namespace RT_Stream_App.ViewModels
         private ObservableCollection<shows.showData> _showList;
         private string _showLoadText;
         private bool _showsLoadingBool;
+        private CancellationTokenSource _showsTokenSource;
+        private CancellationToken _showsToken;
 
         public bool ShowsLoadingBool { get => _showsLoadingBool; set => SetField(ref _showsLoadingBool, value); }
         public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
         public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); } }
         public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
+        public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
+        public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
         #endregion
 
-        public async Task LoadShowsAsync()
+        public async Task LoadShowsAsync(CancellationToken ct)
         {
-            ActiveUI = false;
+            // Working to remove ActiveUI
+            //ActiveUI = false;
             ShowLoadText = "Loading API";
-            shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany));
+            shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
             // After this, thumbnails will display as they load
             ShowList = tmpShows.data;
             ShowLoadText = "Loading Thumbnails";
-            tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows));
+            tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows, ct));
             ShowsLoadingBool = false;
             ShowLoadText = "Shows";
+        }
 
-            ActiveUI = true;
+        public void CancelTokens(int level)
+        {
+            switch (level)
+            {
+                case 1:
+                    ShowsTokenSource.Cancel();
+                    ShowsTokenSource = new CancellationTokenSource();
+                    ShowsToken = ShowsTokenSource.Token;
+                    break;
+                default:
+                    break;
+            }
         }
 
         #region PropertyChanged code
