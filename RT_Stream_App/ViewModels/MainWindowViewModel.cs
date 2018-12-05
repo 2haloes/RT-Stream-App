@@ -77,6 +77,20 @@ namespace RT_Stream_App.ViewModels
         public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); } }
         #endregion
 
+        #region Episodes variables
+        private CancellationTokenSource _episodeTokenSource;
+        private CancellationToken _episodeToken;
+        private ObservableCollection<episodes.episodeData> _episodeList;
+        private episodes.episodeData _selectedEpisode;
+        private bool _episodeLoadText;
+
+        public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
+        public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
+        public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
+        public bool EpisodeLoadText { get => _episodeLoadText; set => SetField(ref _episodeLoadText, value); }
+        public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); } }
+        #endregion
+
         public async Task LoadShowsAsync(CancellationToken ct)
         {
             ShowLoadText = "Loading API";
@@ -111,6 +125,8 @@ namespace RT_Stream_App.ViewModels
             SeasonLoadText = false;
         }
 
+        // TODO: Episode loading, showing vars based on public/member/sponsor only (From datetimes on API) and page loading
+
             public void CancelTokens(int level)
         {
             switch (level)
@@ -118,9 +134,15 @@ namespace RT_Stream_App.ViewModels
                 case 1:
                     ShowsTokenSource.Cancel();
                     ShowList = null;
-                    SeasonList = null;
                     ShowsTokenSource = new CancellationTokenSource();
                     ShowsToken = ShowsTokenSource.Token;
+                    CancelTokens(2);
+                    break;
+                case 2:
+                    SeasonTokenSource.Cancel();
+                    SeasonList = null;
+                    SeasonTokenSource = new CancellationTokenSource();
+                    SeasonToken = SeasonTokenSource.Token;
                     break;
                 default:
                     break;
