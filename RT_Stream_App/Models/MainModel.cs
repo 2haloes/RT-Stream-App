@@ -30,6 +30,17 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
+        public static seasons.APIData loadSeasons(shows.showData selectedShow, CancellationToken ct)
+        {
+            seasons.APIData toReturn = JsonConvert.DeserializeObject<seasons.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedShow.links.seasons));
+            // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
+            if (ct.IsCancellationRequested)
+            {
+                return null;
+            }
+            return toReturn;
+        }
+
         public static shows.APIData loadShowImages(shows.APIData showList, CancellationToken ct)
         {
             shows.APIData toReturn = showList;

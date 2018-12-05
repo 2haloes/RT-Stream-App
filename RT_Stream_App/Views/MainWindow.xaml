@@ -19,7 +19,7 @@
     <Grid Row="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="*"></RowDefinition>
-        <RowDefinition Height="7*"></RowDefinition>
+        <RowDefinition Height="6.5*"></RowDefinition>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -29,7 +29,7 @@
       </Grid.ColumnDefinitions>
       
       <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-      <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" IsEnabled="{Binding ActiveUI}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel>
@@ -40,7 +40,7 @@
       </ListBox>
 
       <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="{Binding ShowLoadText}" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-      <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" IsEnabled="{Binding ActiveUI}" SelectedItem="{Binding selectedShow}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid Height="64">
@@ -56,6 +56,9 @@
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
+      
+      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="Loading seasons" IsVisible="{Binding SeasonLoadText}" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
       
       <!--
     

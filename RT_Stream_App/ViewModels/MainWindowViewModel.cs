@@ -27,13 +27,16 @@ namespace RT_Stream_App.ViewModels
         public MainWindowViewModel()
         {
             ShowLoadText = "Shows";
-            ShowsLoadingBool = false;
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
             LoadShows = new DelegateCommand(async () => await LoadShowsAsync(ShowsToken));
+            SeasonTokenSource = new CancellationTokenSource();
+            SeasonToken = SeasonTokenSource.Token;
+            LoadSeasons = new DelegateCommand(async () => await LoadSeasonsAsync(ShowsToken));
+            SeasonLoadText = false;
         }
         #region Global variables
-        
+
         #endregion
 
         #region Companies variables
@@ -48,22 +51,34 @@ namespace RT_Stream_App.ViewModels
         private shows.showData _selectedShow;
         private ObservableCollection<shows.showData> _showList;
         private string _showLoadText;
-        private bool _showsLoadingBool;
         private CancellationTokenSource _showsTokenSource;
         private CancellationToken _showsToken;
 
-        public bool ShowsLoadingBool { get => _showsLoadingBool; set => SetField(ref _showsLoadingBool, value); }
         public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
-        public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); } }
+        public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); LoadSeasons.Execute(null); } }
         public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
         public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
         public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
+
+        public ICommand LoadSeasons;
+        #endregion
+
+        #region Season variables
+        private CancellationTokenSource _seasonTokenSource;
+        private CancellationToken _seasonToken;
+        private ObservableCollection<seasons.seasonData> _seasonList;
+        private seasons.seasonData _selectedSeason;
+        private bool _seasonLoadText;
+
+        public CancellationTokenSource SeasonTokenSource { get => _seasonTokenSource; set => SetField(ref _seasonTokenSource, value); }
+        public CancellationToken SeasonToken { get => _seasonToken; set => SetField(ref _seasonToken, value); }
+        public ObservableCollection<seasons.seasonData> SeasonList { get => _seasonList; set => SetField(ref _seasonList, value); }
+        public bool SeasonLoadText { get => _seasonLoadText; set => SetField(ref _seasonLoadText, value); }
+        public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); } }
         #endregion
 
         public async Task LoadShowsAsync(CancellationToken ct)
         {
-            // Working to remove ActiveUI
-            //ActiveUI = false;
             ShowLoadText = "Loading API";
             shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
             if (ct.IsCancellationRequested)
@@ -74,16 +89,36 @@ namespace RT_Stream_App.ViewModels
             ShowList = tmpShows.data;
             ShowLoadText = "Loading Thumbnails";
             tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows, ct));
-            ShowsLoadingBool = false;
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
             ShowLoadText = "Shows";
         }
 
-        public void CancelTokens(int level)
+        public async Task LoadSeasonsAsync(CancellationToken ct)
+        {
+            if (selectedShow == null)
+            {
+                return;
+            }
+            SeasonLoadText = true;
+            SeasonList = await Task.Run(() => MainModel.loadSeasons(selectedShow, ct).data);
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+            SeasonLoadText = false;
+        }
+
+            public void CancelTokens(int level)
         {
             switch (level)
             {
                 case 1:
                     ShowsTokenSource.Cancel();
+                    ShowList = null;
+                    SeasonList = null;
                     ShowsTokenSource = new CancellationTokenSource();
                     ShowsToken = ShowsTokenSource.Token;
                     break;

@@ -19,13 +19,13 @@ namespace RT_Stream_App.Classes
         /// </summary>
         public class APIData : CallChanged
         {
-            private ObservableCollection<companyData> _data;
+            private ObservableCollection<seasonData> _data;
 
             public APIData()
             {
-                this.data = new ObservableCollection<companyData>();
+                this.data = new ObservableCollection<seasonData>();
             }
-            public ObservableCollection<companyData> data {
+            public ObservableCollection<seasonData> data {
                 get => _data;
                 set => SetField(ref _data, value);
             }
@@ -34,12 +34,12 @@ namespace RT_Stream_App.Classes
         /// <summary>
         /// A class that holds the data for each company (Name and link mostly)
         /// </summary>
-        public class companyData : CallChanged
+        public class seasonData : CallChanged
         {
             private linkData _links;
             private attributeData _attributes;
 
-            public companyData()
+            public seasonData()
             {
                 this.attributes = new attributeData();
                 this.links = new linkData();
@@ -54,6 +54,11 @@ namespace RT_Stream_App.Classes
                 get => _links;
                 set => SetField(ref _links, value);
             }
+
+            public override string ToString()
+            {
+                return attributes.title;
+            }
         }
 
         /// <summary>
@@ -61,11 +66,11 @@ namespace RT_Stream_App.Classes
         /// </summary>
         public class attributeData : CallChanged
         {
-            private string _name;
+            private string _title;
 
-            public string name {
-                get => _name;
-                set => SetField(ref _name, value);
+            public string title {
+                get => _title;
+                set => SetField(ref _title, value);
             }
         }
 
@@ -74,11 +79,11 @@ namespace RT_Stream_App.Classes
         /// </summary>
         public class linkData : CallChanged
         {
-            private string _shows;
+            private string _episodes;
 
-            public string shows {
-                get => _shows;
-                set => SetField(ref _shows, value);
+            public string episodes {
+                get => _episodes;
+                set => SetField(ref _episodes, value);
             }
         }
 
