@@ -23,14 +23,20 @@ namespace RT_Stream_App.Classes
         public class APIData : CallChanged
         {
             private ObservableCollection<episodeData> _data;
+            private int _total_results;
 
             public APIData()
             {
                 this.data = new ObservableCollection<episodeData>();
             }
-            public ObservableCollection<episodeData> data {
+            public ObservableCollection<episodeData> data
+            {
                 get => _data;
                 set => SetField(ref _data, value);
+            }
+            public int total_results {
+                get => _total_results;
+                set => SetField(ref _total_results, value);
             }
         }
 
@@ -43,6 +49,8 @@ namespace RT_Stream_App.Classes
             private attributeData _attributes;
             private includedData _included;
             private IBitmap _thumbImage;
+            private bool _sponsorTimed;
+            private bool _memberTimed;
 
             public episodeData()
             {
@@ -60,7 +68,8 @@ namespace RT_Stream_App.Classes
                 get => _links;
                 set => SetField(ref _links, value);
             }
-            public includedData included {
+            public includedData included
+            {
                 get => _included;
                 set => SetField(ref _included, value);
             }
@@ -68,6 +77,20 @@ namespace RT_Stream_App.Classes
             {
                 get => _thumbImage;
                 set => SetField(ref _thumbImage, value);
+            }
+            public string lengthTimeDisplay
+            {
+                get => TimeSpan.FromSeconds(attributes.length).ToString("c");
+            }
+            public bool sponsorTimed
+            {
+                get => _sponsorTimed;
+                set => SetField(ref _sponsorTimed, value);
+            }
+            public bool memberTimed
+            {
+                get => _memberTimed;
+                set => SetField(ref _memberTimed, value);
             }
         }
 
@@ -77,16 +100,24 @@ namespace RT_Stream_App.Classes
         public class attributeData : CallChanged
         {
             private string _title;
+            private string _display_title;
             private bool _is_sponsors_only;
             private string _caption;
             private DateTime _public_golive_at;
             private DateTime _sponsor_golive_at;
             private DateTime _member_golive_at;
+            private int _length;
 
             public string title
             {
                 get => _title;
                 set => SetField(ref _title, value);
+            }
+
+            public string display_title
+            {
+                get => _display_title;
+                set => SetField(ref _display_title, value);
             }
 
             public bool is_sponsors_only
@@ -117,6 +148,11 @@ namespace RT_Stream_App.Classes
             {
                 get => _member_golive_at;
                 set => SetField(ref _member_golive_at, value);
+            }
+
+            public int length {
+                get => _length;
+                set => SetField(ref _length, value);
             }
         }
 

@@ -4,9 +4,7 @@
         Icon="resm:RT_Stream_App.Assets.avalonia-logo.ico"
         Title="RT Stream App"
         MinHeight="480"
-        Height="480"
-        MinWidth="640"
-        Width="640">
+        MinWidth="640">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
@@ -22,7 +20,6 @@
         <RowDefinition Height="6.5*"></RowDefinition>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"></ColumnDefinition>
         <ColumnDefinition Width="*"></ColumnDefinition>
         <ColumnDefinition Width="*"></ColumnDefinition>
         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -57,8 +54,42 @@
         </ListBox.ItemTemplate>
       </ListBox>
       
-      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
-      <TextBlock Grid.Row="1" Grid.Column="2" Text="Loading seasons" IsVisible="{Binding SeasonLoadText}" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+      <TextBlock Grid.Row="0" Grid.Column="2" Text="Seasons/Episodes" IsVisible="{Binding SeasonPlaceholderText}" Margin="20,0,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
+      <Grid Grid.Row="1" Grid.Column="2">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+          <Grid Grid.Row="1" Margin="0,0,20,0" >
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+          </Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0" Text="{Binding SeasonLoadText}"  Margin="20,0,20,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
+          <DropDown Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></DropDown>
+        </Grid>
+      
+      
+        <ListBox Grid.Row="1" Grid.Column="2" Items="{Binding EpisodeList}" SelectedItem="{Binding selectedEpisode}" HorizontalAlignment="Stretch" Margin="20,30,20,0" VerticalAlignment="Stretch">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid Height="64">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="{Binding thumbImage}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
+                <TextBlock Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding attributes.is_sponsors_only}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <TextBlock Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding sponsorTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <TextBlock Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding memberTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <TextBlock Grid.Column="2" Text="{Binding attributes.title}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
       
       <!--
     
@@ -75,6 +106,16 @@
           </ListBox.ItemTemplate>
         </ListBox>
     -->
+    </Grid>
+    <Grid Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+    
+      <TextBlock Grid.Column="0" Margin="20" Text="Amount of results per page:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
+      <TextBox Grid.Column="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
     </Grid>
   </Grid>
   

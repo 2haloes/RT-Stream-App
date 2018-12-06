@@ -20,12 +20,14 @@ namespace RT_Stream_App.Classes
         public class APIData : CallChanged
         {
             private ObservableCollection<seasonData> _data;
+            private int _total_pages;
 
             public APIData()
             {
                 this.data = new ObservableCollection<seasonData>();
             }
-            public ObservableCollection<seasonData> data {
+            public ObservableCollection<seasonData> data
+            {
                 get => _data;
                 set => SetField(ref _data, value);
             }
@@ -82,7 +84,7 @@ namespace RT_Stream_App.Classes
             private string _episodes;
 
             public string episodes {
-                get => _episodes;
+                get => _episodes.Substring(0, _episodes.IndexOf('?'));
                 set => SetField(ref _episodes, value);
             }
         }

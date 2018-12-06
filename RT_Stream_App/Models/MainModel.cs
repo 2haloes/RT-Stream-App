@@ -12,6 +12,36 @@ namespace RT_Stream_App.Models
 {
     public static class MainModel
     {
+
+        public static settings SettingsLoad()
+        {
+            if (File.Exists("settings.json"))
+            {
+                return JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            }
+            else
+            {
+                settings newSettings = new settings()
+                {
+                    page_length = 20,
+                    username = "",
+                    password = "",
+                };
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(newSettings));
+                return newSettings;
+            }
+        }
+
+        public static void SavePageCount(settings currentSettings)
+        {
+            if (currentSettings.page_length != 0)
+            {
+                settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+                oldSettings.page_length = currentSettings.page_length;
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+            }
+        }
+
         public static companies.APIData loadCompanies()
         {
             // This takes the API data for companies and converts it into a useable class
@@ -41,10 +71,40 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
+        public static episodes.APIData loadEpisodes(seasons.seasonData selectedSeason, CancellationToken ct, int pageCount, int perPage)
+        {
+            episodes.APIData toReturn = JsonConvert.DeserializeObject<episodes.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedSeason.links.episodes + "?page=" + pageCount + "&per_page=" + perPage));
+            for (int i = 0; i < toReturn.data.Count; i++)
+            {
+                // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
+                if (ct.IsCancellationRequested)
+                {
+                    return null;
+                }
+                if (!toReturn.data[i].attributes.is_sponsors_only)
+                {
+                    if (toReturn.data[i].attributes.public_golive_at > DateTime.Now)
+                    {
+                        if (toReturn.data[i].attributes.member_golive_at < DateTime.Now)
+                        {
+                            toReturn.data[i].memberTimed = true;
+                        }
+                        else
+                        {
+                            toReturn.data[i].sponsorTimed = true;
+                        }
+                    }
+                }
+            }
+            return toReturn;
+        }
+
+
+
         public static shows.APIData loadShowImages(shows.APIData showList, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
-            for (int i = 0; i < toReturn.data.Count - 1; i++)
+            for (int i = 0; i < toReturn.data.Count; i++)
             {
                 try
                 {
@@ -54,6 +114,20 @@ namespace RT_Stream_App.Models
                 {
                     toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb);
                 }
+                if (ct.IsCancellationRequested)
+                {
+                    return null;
+                }
+            }
+            return toReturn;
+        }
+
+        public static episodes.APIData loadEpisodeImages(episodes.APIData episodeList, CancellationToken ct)
+        {
+            episodes.APIData toReturn = episodeList;
+            for (int i = 0; i < toReturn.data.Count; i++)
+            {
+                toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[0].attributes.thumb);
                 if (ct.IsCancellationRequested)
                 {
                     return null;
