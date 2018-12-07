@@ -48,7 +48,7 @@ namespace RT_Stream_App.Classes
             private linkData _links;
             private attributeData _attributes;
             private includedData _included;
-            private IBitmap _thumbImage;
+            private IBitmap _image;
             private bool _sponsorTimed;
             private bool _memberTimed;
 
@@ -73,10 +73,10 @@ namespace RT_Stream_App.Classes
                 get => _included;
                 set => SetField(ref _included, value);
             }
-            public IBitmap thumbImage
+            public IBitmap Image
             {
-                get => _thumbImage;
-                set => SetField(ref _thumbImage, value);
+                get => _image;
+                set => SetField(ref _image, value);
             }
             public string lengthTimeDisplay
             {
@@ -213,11 +213,25 @@ namespace RT_Stream_App.Classes
         public class imageAttributes : CallChanged
         {
             private string _thumb;
+            private string _small;
+            private string _medium;
 
             public string thumb
             {
                 get => _thumb;
                 set => SetField(ref _thumb, value);
+            }
+
+            public string small
+            {
+                get => _small;
+                set => SetField(ref _small, value);
+            }
+
+            public string medium
+            {
+                get => _medium;
+                set => SetField(ref _medium, value);
             }
 
         }

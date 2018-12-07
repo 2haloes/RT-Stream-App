@@ -99,6 +99,18 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
+        public static videos.APIData loadVideos(episodes.episodeData selectedEpisode, CancellationToken ct)
+        {
+            videos.APIData toReturn = JsonConvert.DeserializeObject<videos.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedEpisode.links.videos));
+            // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
+            // If a video is not avliable to view (due to not be open to the public) then the JSON returns an access value
+            if (ct.IsCancellationRequested || !toReturn.access)
+            {
+                return null;
+            }
+            return toReturn;
+        }
+
 
 
         public static shows.APIData loadShowImages(shows.APIData showList, CancellationToken ct)
@@ -127,7 +139,7 @@ namespace RT_Stream_App.Models
             episodes.APIData toReturn = episodeList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
-                toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[0].attributes.thumb);
+                toReturn.data[i].Image = downloadedBitmap(toReturn.data[i].included.images[0].attributes.medium);
                 if (ct.IsCancellationRequested)
                 {
                     return null;

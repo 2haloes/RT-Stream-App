@@ -20,7 +20,6 @@ namespace RT_Stream_App.Classes
         public class APIData : CallChanged
         {
             private ObservableCollection<seasonData> _data;
-            private int _total_pages;
 
             public APIData()
             {

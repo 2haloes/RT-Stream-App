@@ -14,7 +14,7 @@
       <RowDefinition Height="*"></RowDefinition>
       <RowDefinition Height="*"></RowDefinition>
     </Grid.RowDefinitions>
-    <Grid Row="0">
+    <Grid Row="0" Name="ScraperControls">
       <Grid.RowDefinitions>
         <RowDefinition Height="*"></RowDefinition>
         <RowDefinition Height="6.5*"></RowDefinition>
@@ -81,7 +81,7 @@
                   <ColumnDefinition Width="Auto"></ColumnDefinition>
                   <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="{Binding thumbImage}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
+                <Image Grid.Column="0" Source="{Binding Image}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
                 <TextBlock Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding attributes.is_sponsors_only}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 <TextBlock Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding sponsorTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
                 <TextBlock Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding memberTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
@@ -108,15 +108,37 @@
         </ListBox>
     -->
     </Grid>
-    <Grid Row="1">
+    <Grid Row="1" Name="OtherControls">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"></ColumnDefinition>
-        <ColumnDefinition Width="*"></ColumnDefinition>
-        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="2*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
     
       <TextBlock Grid.Column="0" Margin="20" Text="Amount of results per page:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
       <TextBox Grid.Column="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+    
+      <Grid Column="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="3*"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.display_title}" HorizontalAlignment="Center" FontSize="24"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.caption}" HorizontalAlignment="Center"></TextBlock>
+        <Image Grid.Row="2" Grid.ColumnSpan="2" Source="{Binding selectedEpisode.Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Image>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="{Binding selectedEpisode.lengthTimeDisplay}" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding selectedEpisode.attributes.is_sponsors_only, FallbackValue=false}" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding selectedEpisode.sponsorTimed, FallbackValue=false}" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding selectedEpisode.memberTimed, FallbackValue=false}" HorizontalAlignment="Center"/>  
+        <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding OpenVideo}">Open Video</Button>
+      </Grid>
     </Grid>
   </Grid>
   

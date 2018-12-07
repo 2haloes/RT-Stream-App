@@ -165,6 +165,21 @@ namespace RT_Stream_App.ViewModels
             SeasonLoadText = "";
         }
 
+        public async Task LoadVideoAsync(CancellationToken ct)
+        {
+            if (selectedEpisode == null)
+            {
+                return;
+            }
+            SeasonLoadText = "Loading API";
+            videos.APIData tmpEpisodes = await Task.Run(() => MainModel.loadVideos(selectedEpisode, ct));
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+            SeasonLoadText = "";
+        }
+
         /// <summary>
         /// This calls the program to cancel the tokens for async tasks and clears the data (1 for company change, 2 for show change and 3 for season change)
         /// </summary>
