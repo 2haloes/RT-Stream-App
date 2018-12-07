@@ -67,8 +67,8 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
           </Grid.ColumnDefinitions>
           <TextBlock Grid.Column="0" Text="{Binding SeasonLoadText}"  Margin="20,0,20,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
-          <DropDown Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></DropDown>
           <TextBlock Grid.Column="1" Text="Page" IsVisible="{Binding PagePlaceholderText}"  Margin="0,5,0,0" HorizontalAlignment="Center"></TextBlock>
+          <DropDown Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></DropDown>
         </Grid>
       
       
