@@ -101,8 +101,9 @@ namespace RT_Stream_App.ViewModels
         public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
         public bool EpisodeLoadText { get => _episodeLoadText; set => SetField(ref _episodeLoadText, value); }
         public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); } }
-        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(3); LoadEpisodes.Execute(null); } }
+        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodes.Execute(null); } }
         public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
+        public bool PagePlaceholderText { get { return PageNumber == 0 ? true : false; } }
         public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
         #endregion
 
@@ -187,6 +188,13 @@ namespace RT_Stream_App.ViewModels
                     CancelTokens(3);
                     break;
                 case 3:
+                    EpisodeTokenSource.Cancel();
+                    EpisodeList = null;
+                    PageList = null;
+                    EpisodeTokenSource = new CancellationTokenSource();
+                    EpisodeToken = EpisodeTokenSource.Token;
+                    break;
+                case 4:
                     EpisodeTokenSource.Cancel();
                     EpisodeList = null;
                     EpisodeTokenSource = new CancellationTokenSource();
