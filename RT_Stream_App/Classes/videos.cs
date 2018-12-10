@@ -62,7 +62,6 @@ namespace RT_Stream_App.Classes
         public class attributeData : CallChanged
         {
             private string _url;
-            private string _cutUrl;
 
             public string url {
                 get => _url;
@@ -71,8 +70,7 @@ namespace RT_Stream_App.Classes
 
             public string cutUrl
             {
-                get => _cutUrl;
-                set => SetField(ref _cutUrl, value);
+                get => _url.Substring(0, _url.LastIndexOf('/'));
             }
         }
 

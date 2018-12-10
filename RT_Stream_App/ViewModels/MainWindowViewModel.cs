@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,11 +36,17 @@ namespace RT_Stream_App.ViewModels
             LoadShows = new DelegateCommand(async () => await LoadShowsAsync(ShowsToken));
             SeasonTokenSource = new CancellationTokenSource();
             SeasonToken = SeasonTokenSource.Token;
-            LoadSeasons = new DelegateCommand(async () => await LoadSeasonsAsync(ShowsToken));
+            LoadSeasons = new DelegateCommand(async () => await LoadSeasonsAsync(SeasonToken));
             SeasonLoadText = "";
             EpisodeTokenSource = new CancellationTokenSource();
             EpisodeToken = EpisodeTokenSource.Token;
-            LoadEpisodes = new DelegateCommand(async () => await LoadEpisodesAsync(ShowsToken, 20));
+            LoadEpisodes = new DelegateCommand(async () => await LoadEpisodesAsync(EpisodeToken, 20));
+            ButtonEnable = false;
+            ButtonText = "Select a video";
+            VideoTokenSource = new CancellationTokenSource();
+            VideoToken = VideoTokenSource.Token;
+            LoadVideo = new DelegateCommand(async () => await LoadVideoAsync(VideoToken));
+            OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync());
         }
         #region Global variables
         private settings _appSettings;
@@ -93,18 +101,32 @@ namespace RT_Stream_App.ViewModels
         private episodes.episodeData _selectedEpisode;
         private bool _episodeLoadText;
         private int _pageNumber;
-        //private int _pageCountNumber;
         private ObservableCollection<int> _pageList;
 
         public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
         public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
         public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
         public bool EpisodeLoadText { get => _episodeLoadText; set => SetField(ref _episodeLoadText, value); }
-        public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); } }
+        public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); CancelTokens(5); LoadVideo.Execute(null); } }
         public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodes.Execute(null); } }
         public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
         public bool PagePlaceholderText { get { return PageNumber == 0 ? true : false; } }
         public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
+        public ICommand LoadVideo;
+        #endregion
+
+        #region Video variables
+        private CancellationTokenSource _videoTokenSource;
+        private CancellationToken _videoToken;
+        private bool _buttonEnable;
+        private string _buttonText;
+        private ICommand _loadVideoPlayer;
+
+        public CancellationTokenSource VideoTokenSource { get => _videoTokenSource; set => SetField(ref _videoTokenSource, value); }
+        public CancellationToken VideoToken { get => _videoToken; set => SetField(ref _videoToken, value); }
+        public bool ButtonEnable { get => _buttonEnable; set => SetField(ref _buttonEnable, value); }
+        public string ButtonText { get => _buttonText; set => SetField(ref _buttonText, value); }
+        public ICommand OpenVideo { get => _loadVideoPlayer; set => SetField(ref _loadVideoPlayer, value); }
         #endregion
 
         public async Task LoadShowsAsync(CancellationToken ct)
@@ -171,17 +193,39 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            SeasonLoadText = "Loading API";
-            videos.APIData tmpEpisodes = await Task.Run(() => MainModel.loadVideos(selectedEpisode, ct));
+            ButtonText = "Loading API";
+            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadVideos(selectedEpisode, ct));
             if (ct.IsCancellationRequested)
             {
                 return;
             }
-            SeasonLoadText = "";
+            ButtonEnable = true;
+            ButtonText = "Play Video";
+        }
+
+        public async Task LoadVideoPlayerAsync()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8",
+                    UseShellExecute = true
+                };
+                await Task.Run(() => Process.Start(psi));
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                await Task.Run(() => Process.Start("open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+            }
         }
 
         /// <summary>
-        /// This calls the program to cancel the tokens for async tasks and clears the data (1 for company change, 2 for show change and 3 for season change)
+        /// This calls the program to cancel the tokens for async tasks and clears the data (1 for company change, 2 for show change, 3 for season change, 4 for page change and 5 for video change)
         /// </summary>
         /// <param name="level"></param>
         public void CancelTokens(int level)
@@ -214,6 +258,12 @@ namespace RT_Stream_App.ViewModels
                     EpisodeList = null;
                     EpisodeTokenSource = new CancellationTokenSource();
                     EpisodeToken = EpisodeTokenSource.Token;
+                    break;
+                case 5:
+                    ButtonEnable = false;
+                    VideoTokenSource.Cancel();
+                    VideoTokenSource = new CancellationTokenSource();
+                    VideoToken = VideoTokenSource.Token;
                     break;
                 default:
                     break;

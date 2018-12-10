@@ -137,7 +137,7 @@
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding selectedEpisode.attributes.is_sponsors_only, FallbackValue=false}" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding selectedEpisode.sponsorTimed, FallbackValue=false}" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding selectedEpisode.memberTimed, FallbackValue=false}" HorizontalAlignment="Center"/>  
-        <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding OpenVideo}">Open Video</Button>
+        <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding OpenVideo}" Content="{Binding ButtonText}" IsEnabled="{Binding ButtonEnable}"></Button>
       </Grid>
     </Grid>
   </Grid>

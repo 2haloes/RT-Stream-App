@@ -108,6 +108,21 @@ namespace RT_Stream_App.Models
             {
                 return null;
             }
+            string[] fileToOpen;
+            using (WebClient webClient = new WebClient())
+                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.url).Split(new string[] { "\n" }, StringSplitOptions.None);
+            for (int i = 0; i < fileToOpen.Length; i++)
+            {
+                if (fileToOpen[i].Contains("-store-"))
+                {
+                    fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];
+                }
+            }
+            if (ct.IsCancellationRequested)
+            {
+                return null;
+            }
+            File.WriteAllLines("VideoLink.m3u8", fileToOpen);
             return toReturn;
         }
 
