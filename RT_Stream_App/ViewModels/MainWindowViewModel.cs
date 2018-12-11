@@ -45,8 +45,8 @@ namespace RT_Stream_App.ViewModels
             ButtonText = "Select a video";
             VideoTokenSource = new CancellationTokenSource();
             VideoToken = VideoTokenSource.Token;
-            LoadVideo = new DelegateCommand(async () => await LoadVideoAsync(VideoToken));
-            OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync());
+            LoadVideo = new DelegateCommand(async () => await LoadVideoAsync());
+            OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync(VideoToken));
         }
         #region Global variables
         private settings _appSettings;
@@ -187,24 +187,46 @@ namespace RT_Stream_App.ViewModels
             SeasonLoadText = "";
         }
 
-        public async Task LoadVideoAsync(CancellationToken ct)
+        public async Task LoadVideoAsync()
+        {
+            if (selectedEpisode == null)
+            {
+                return;
+            }
+            if (selectedEpisode.memberTimed || selectedEpisode.sponsorTimed || selectedEpisode.attributes.is_sponsors_only)
+            {
+                ButtonEnable = false;
+                ButtonText = "Cannot play videos that require login";
+                return;
+            }
+            else
+            {
+                ButtonEnable = true;
+                ButtonText = "Play Video";
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Downloads the m3u8 file that contains the stream data. 
+        /// VLC automatically uses auto quality
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        public async Task LoadVideoPlayerAsync(CancellationToken ct)
         {
             if (selectedEpisode == null)
             {
                 return;
             }
             ButtonText = "Loading API";
+            // Will likely add a quality selector later
             videos.APIData tmpVideo = await Task.Run(() => MainModel.loadVideos(selectedEpisode, ct));
+            ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
             {
                 return;
             }
-            ButtonEnable = true;
-            ButtonText = "Play Video";
-        }
-
-        public async Task LoadVideoPlayerAsync()
-        {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 ProcessStartInfo psi = new ProcessStartInfo
@@ -261,6 +283,7 @@ namespace RT_Stream_App.ViewModels
                     break;
                 case 5:
                     ButtonEnable = false;
+                    ButtonText = "Select a video";
                     VideoTokenSource.Cancel();
                     VideoTokenSource = new CancellationTokenSource();
                     VideoToken = VideoTokenSource.Token;
