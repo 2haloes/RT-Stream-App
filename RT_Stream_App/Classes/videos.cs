@@ -12,12 +12,12 @@ namespace RT_Stream_App.Classes
             // Show properties
 
 
-    public class videos : CallChanged
+    public class videos : baseClass
     {
         /// <summary>
         /// Root of the JSON
         /// </summary>
-        public class APIData : CallChanged
+        public new class APIData : baseClass.APIData
         {
             private ObservableCollection<videoData> _data;
             private bool _access;
@@ -27,7 +27,7 @@ namespace RT_Stream_App.Classes
                 access = true;
                 this.data = new ObservableCollection<videoData>();
             }
-            public ObservableCollection<videoData> data
+            public new ObservableCollection<videoData> data
             {
                 get => _data;
                 set => SetField(ref _data, value);
@@ -41,36 +41,37 @@ namespace RT_Stream_App.Classes
         /// <summary>
         /// A class that holds the data for each company (Name and link mostly)
         /// </summary>
-        public class videoData : CallChanged
+        public class videoData : baseClass.objectData
         {
-            private attributeData _attributes;
-
             public videoData()
             {
-                this.attributes = new attributeData();
+                attributes = new attributeData();
             }
 
-            public attributeData attributes {
+            private attributeData _attributes;
+
+            public new attributeData attributes
+            {
                 get => _attributes;
                 set => SetField(ref _attributes, value);
             }
+
         }
 
         /// <summary>
         /// Contains the video link
         /// </summary>
-        public class attributeData : CallChanged
+        public new class attributeData : baseClass.attributeData
         {
-            private string _url;
 
             public string url {
-                get => _url;
-                set => SetField(ref _url, value);
+                get => displayText;
+                set => displayText = value;
             }
 
             public string cutUrl
             {
-                get => _url.Substring(0, _url.LastIndexOf('/'));
+                get => displayText.Substring(0, displayText.LastIndexOf('/'));
             }
         }
 

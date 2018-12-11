@@ -26,6 +26,7 @@ namespace RT_Stream_App.Models
                     page_length = 20,
                     username = "",
                     password = "",
+                    theme = "Light"
                 };
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(newSettings));
                 return newSettings;
@@ -110,7 +111,7 @@ namespace RT_Stream_App.Models
             }
             string[] fileToOpen;
             using (WebClient webClient = new WebClient())
-                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.url).Split(new string[] { "\n" }, StringSplitOptions.None);
+                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.displayText).Split(new string[] { "\n" }, StringSplitOptions.None);
             for (int i = 0; i < fileToOpen.Length; i++)
             {
                 if (fileToOpen[i].Contains("-store-"))
