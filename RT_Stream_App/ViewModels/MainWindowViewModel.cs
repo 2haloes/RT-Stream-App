@@ -29,7 +29,7 @@ namespace RT_Stream_App.ViewModels
         public MainWindowViewModel()
         {
             appSettings = MainModel.SettingsLoad();
-            //PageCountNumber = appSettings.page_length;
+            CompanyList = MainModel.loadJSON<companies.APIData>("/api/v1/channels").data;
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
@@ -56,8 +56,10 @@ namespace RT_Stream_App.ViewModels
 
         #region Companies variables
         private companies.companyData _selectedCompany;
+        private ObservableCollection<companies.companyData> _companyList;
+
         public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); CancelTokens(1); LoadShows.Execute(null); } }
-        public ObservableCollection<companies.companyData> CompanyList => MainModel.loadCompanies().data;
+        public ObservableCollection<companies.companyData> CompanyList { get => _companyList; set => SetField(ref _companyList, value); }
 
         public ICommand LoadShows;
         #endregion

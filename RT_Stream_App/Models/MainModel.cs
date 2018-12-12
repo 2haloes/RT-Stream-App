@@ -45,7 +45,7 @@ namespace RT_Stream_App.Models
 
         public static TOut loadJSON<TOut>(string nextLink)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>("https://svod-be.roosterteeth.com" + nextLink);
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + nextLink));
             return toReturn;
         }
 
