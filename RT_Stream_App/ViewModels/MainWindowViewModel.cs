@@ -170,7 +170,8 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading API";
-            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadEpisodes(selectedSeason, ct, PageNumber, pageCount));
+            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadJSON<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount));
+            tmpEpisodes = await Task.Run(() => MainModel.loadEpisodes(tmpEpisodes, ct));
             if (ct.IsCancellationRequested)
             {
                 return;

@@ -12,30 +12,32 @@ namespace RT_Stream_App.Classes
             // Show properties
 
 
-    public class seasons : baseClass
+    public class seasons : CallChanged
     {
         /// <summary>
         /// Root of the JSON
         /// </summary>
-        public new class APIData : baseClass.APIData
+        public class APIData : CallChanged
         {
             private ObservableCollection<seasonData> _data;
+            private int _total_pages;
 
             public APIData()
             {
                 this.data = new ObservableCollection<seasonData>();
             }
-            public new ObservableCollection<seasonData> data
+            public ObservableCollection<seasonData> data
             {
                 get => _data;
                 set => SetField(ref _data, value);
             }
+            public int total_pages { get => _total_pages; set => SetField(ref _total_pages, value); }
         }
 
         /// <summary>
         /// A class that holds the data for each company (Name and link mostly)
         /// </summary>
-        public class seasonData : objectData
+        public class seasonData : CallChanged
         {
             private linkData _links;
             private attributeData _attributes;
@@ -46,11 +48,11 @@ namespace RT_Stream_App.Classes
                 this.links = new linkData();
             }
 
-            public new attributeData attributes {
+            public attributeData attributes {
                 get => _attributes;
                 set => SetField(ref _attributes, value);
             }
-            public new linkData links
+            public linkData links
             {
                 get => _links;
                 set => SetField(ref _links, value);
@@ -65,24 +67,26 @@ namespace RT_Stream_App.Classes
         /// <summary>
         /// Contains the company name
         /// </summary>
-        public new class attributeData : baseClass.attributeData
+        public class attributeData : CallChanged
         {
             private string _title;
 
             public string title {
-                get => displayText;
-                set => displayText = value;
+                get => _title;
+                set => SetField(ref _title, value);
             }
         }
 
         /// <summary>
         /// Contains link data for the next step
         /// </summary>
-        public new class linkData : baseClass.linkData
+        public class linkData : CallChanged
         {
+            private string _episodes;
+
             public string episodes {
-                get => nextLink.Substring(0, nextLink.IndexOf('?'));
-                set => nextLink = value;
+                get => _episodes.Substring(0, _episodes.IndexOf('?'));
+                set => SetField(ref _episodes, value);
             }
         }
 

@@ -43,6 +43,18 @@ namespace RT_Stream_App.Models
             }
         }
 
+        public static TOut loadJSON<TOut>(string nextLink)
+        {
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>("https://svod-be.roosterteeth.com" + nextLink);
+            return toReturn;
+        }
+
+        public static TOut loadJSON<TOut>(string nextLink, int pageCount, int perPage)
+        {
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + nextLink + "?page=" + pageCount + "&per_page=" + perPage));
+            return toReturn;
+        }
+
         public static companies.APIData loadCompanies()
         {
             // This takes the API data for companies and converts it into a useable class
@@ -72,9 +84,9 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static episodes.APIData loadEpisodes(seasons.seasonData selectedSeason, CancellationToken ct, int pageCount, int perPage)
+        public static episodes.APIData loadEpisodes(episodes.APIData toReturn, CancellationToken ct)
         {
-            episodes.APIData toReturn = JsonConvert.DeserializeObject<episodes.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedSeason.links.episodes + "?page=" + pageCount + "&per_page=" + perPage));
+            //episodes.APIData toReturn = JsonConvert.DeserializeObject<episodes.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedSeason.links.episodes + "?page=" + pageCount + "&per_page=" + perPage));
             for (int i = 0; i < toReturn.data.Count; i++)
             {
                 // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
@@ -111,7 +123,7 @@ namespace RT_Stream_App.Models
             }
             string[] fileToOpen;
             using (WebClient webClient = new WebClient())
-                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.displayText).Split(new string[] { "\n" }, StringSplitOptions.None);
+                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.url).Split(new string[] { "\n" }, StringSplitOptions.None);
             for (int i = 0; i < fileToOpen.Length; i++)
             {
                 if (fileToOpen[i].Contains("-store-"))
