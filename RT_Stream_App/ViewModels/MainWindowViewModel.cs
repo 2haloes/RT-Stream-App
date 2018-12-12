@@ -29,7 +29,7 @@ namespace RT_Stream_App.ViewModels
         public MainWindowViewModel()
         {
             appSettings = MainModel.SettingsLoad();
-            CompanyList = MainModel.loadJSON<companies.APIData>("/api/v1/channels").data;
+            CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels").data;
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
@@ -52,6 +52,7 @@ namespace RT_Stream_App.ViewModels
         private settings _appSettings;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
+        public const string rtURL = "https://svod-be.roosterteeth.com";
         #endregion
 
         #region Companies variables
@@ -134,7 +135,8 @@ namespace RT_Stream_App.ViewModels
         public async Task LoadShowsAsync(CancellationToken ct)
         {
             ShowLoadText = "Loading API";
-            shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
+            //shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
+            shows.APIData tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -157,7 +159,7 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading Seasons";
-            SeasonList = await Task.Run(() => MainModel.loadSeasons(selectedShow, ct).data);
+            SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons).data);
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -172,7 +174,11 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading API";
-            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadJSON<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount));
+            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadAPI<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount));
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
             tmpEpisodes = await Task.Run(() => MainModel.loadEpisodes(tmpEpisodes, ct));
             if (ct.IsCancellationRequested)
             {
@@ -224,7 +230,12 @@ namespace RT_Stream_App.ViewModels
             }
             ButtonText = "Loading API";
             // Will likely add a quality selector later
-            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadVideos(selectedEpisode, ct));
+            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos));
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, ct));
             ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
             {

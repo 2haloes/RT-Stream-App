@@ -43,50 +43,20 @@ namespace RT_Stream_App.Models
             }
         }
 
-        public static TOut loadJSON<TOut>(string nextLink)
+        public static TOut loadAPI<TOut>(string refLink)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + nextLink));
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + refLink));
             return toReturn;
         }
 
-        public static TOut loadJSON<TOut>(string nextLink, int pageCount, int perPage)
+        public static TOut loadAPI<TOut>(string nextLink, int pageCount, int perPage)
         {
             TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + nextLink + "?page=" + pageCount + "&per_page=" + perPage));
             return toReturn;
         }
 
-        public static companies.APIData loadCompanies()
-        {
-            // This takes the API data for companies and converts it into a useable class
-            companies.APIData toReturn = JsonConvert.DeserializeObject<companies.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com/api/v1/channels"));
-            return toReturn;
-        }
-
-        public static shows.APIData loadShows(companies.companyData selectedCompany, CancellationToken ct)
-        {
-            shows.APIData toReturn = JsonConvert.DeserializeObject<shows.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedCompany.links.shows));
-            // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
-            if (ct.IsCancellationRequested)
-            {
-                return null;
-            }
-            return toReturn;
-        }
-
-        public static seasons.APIData loadSeasons(shows.showData selectedShow, CancellationToken ct)
-        {
-            seasons.APIData toReturn = JsonConvert.DeserializeObject<seasons.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedShow.links.seasons));
-            // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
-            if (ct.IsCancellationRequested)
-            {
-                return null;
-            }
-            return toReturn;
-        }
-
         public static episodes.APIData loadEpisodes(episodes.APIData toReturn, CancellationToken ct)
         {
-            //episodes.APIData toReturn = JsonConvert.DeserializeObject<episodes.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedSeason.links.episodes + "?page=" + pageCount + "&per_page=" + perPage));
             for (int i = 0; i < toReturn.data.Count; i++)
             {
                 // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
@@ -112,9 +82,8 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static videos.APIData loadVideos(episodes.episodeData selectedEpisode, CancellationToken ct)
+        public static videos.APIData loadVideos(videos.APIData toReturn, CancellationToken ct)
         {
-            videos.APIData toReturn = JsonConvert.DeserializeObject<videos.APIData>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + selectedEpisode.links.videos));
             // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
             // If a video is not avliable to view (due to not be open to the public) then the JSON returns an access value
             if (ct.IsCancellationRequested || !toReturn.access)
