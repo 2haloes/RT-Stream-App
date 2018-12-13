@@ -32,7 +32,7 @@ namespace RT_Stream_App.ViewModels
             appSettings = MainModel.SettingsLoad();
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-            CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels").data;
+            CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
@@ -140,7 +140,7 @@ namespace RT_Stream_App.ViewModels
         {
             ShowLoadText = "Loading API";
             //shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
-            shows.APIData tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows));
+            shows.APIData tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -148,7 +148,7 @@ namespace RT_Stream_App.ViewModels
             // After this, thumbnails will display as they load
             ShowList = tmpShows.data;
             ShowLoadText = "Loading Thumbnails";
-            tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows, ct));
+            tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows, websiteClient, ct));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -163,7 +163,7 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading Seasons";
-            SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons).data);
+            SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -178,7 +178,7 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading API";
-            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadAPI<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount));
+            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadAPI<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount, websiteClient));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -192,7 +192,7 @@ namespace RT_Stream_App.ViewModels
             // After this, thumbnails will display as they load
             EpisodeList = tmpEpisodes.data;
             SeasonLoadText = "Loading Thumbnails";
-            tmpEpisodes = await Task.Run(() => MainModel.loadEpisodeImages(tmpEpisodes, ct));
+            tmpEpisodes = await Task.Run(() => MainModel.loadEpisodeImages(tmpEpisodes, websiteClient, ct));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -233,13 +233,13 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             ButtonText = "Loading API";
-            // Will likely add a quality selector later
-            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos));
+            // Will add a quality selector later
+            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos, websiteClient));
             if (ct.IsCancellationRequested)
             {
                 return;
             }
-            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, ct));
+            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, websiteClient, ct));
             ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
             {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 
@@ -45,15 +46,39 @@ namespace RT_Stream_App.Models
             }
         }
 
-        public static TOut loadAPI<TOut>(string refLink)
+        public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString(siteURL + refLink));
+            HttpResponseMessage response = websiteClient.GetAsync(siteURL + refLink).Result;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+
+                return default(TOut);
+            }
+
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(response.Content.ReadAsStringAsync().Result);
             return toReturn;
         }
 
-        public static TOut loadAPI<TOut>(string nextLink, int pageCount, int perPage)
+        public static TOut loadAPI<TOut>(string refLink, int pageCount, int perPage, HttpClient websiteClient)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString(siteURL + nextLink + "?page=" + pageCount + "&per_page=" + perPage));
+            HttpResponseMessage response = websiteClient.GetAsync(siteURL + refLink + "?page=" + pageCount + "&per_page=" + perPage).Result;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+
+                return default(TOut);
+            }
+
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(response.Content.ReadAsStringAsync().Result);
             return toReturn;
         }
 
@@ -84,7 +109,7 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static videos.APIData loadVideos(videos.APIData toReturn, CancellationToken ct)
+        public static videos.APIData loadVideos(videos.APIData toReturn, HttpClient websiteClient, CancellationToken ct)
         {
             // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
             // If a video is not avliable to view (due to not be open to the public) then the JSON returns an access value
@@ -93,11 +118,22 @@ namespace RT_Stream_App.Models
                 return null;
             }
             string[] fileToOpen;
-            using (WebClient webClient = new WebClient())
-                fileToOpen = webClient.DownloadString(toReturn.data[0].attributes.url).Split(new string[] { "\n" }, StringSplitOptions.None);
+            HttpResponseMessage response = websiteClient.GetAsync(toReturn.data[0].attributes.url).Result;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None);
             for (int i = 0; i < fileToOpen.Length; i++)
             {
-                if (fileToOpen[i].Contains("-store-"))
+                if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS"))
                 {
                     fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];
                 }
@@ -112,18 +148,18 @@ namespace RT_Stream_App.Models
 
 
 
-        public static shows.APIData loadShowImages(shows.APIData showList, CancellationToken ct)
+        public static shows.APIData loadShowImages(shows.APIData showList, HttpClient websiteClient, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
                 try
                 {
-                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb);
+                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb, websiteClient);
                 }
                 catch (Exception)
                 {
-                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb);
+                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb, websiteClient);
                 }
                 if (ct.IsCancellationRequested)
                 {
@@ -133,12 +169,12 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static episodes.APIData loadEpisodeImages(episodes.APIData episodeList, CancellationToken ct)
+        public static episodes.APIData loadEpisodeImages(episodes.APIData episodeList, HttpClient websiteClient, CancellationToken ct)
         {
             episodes.APIData toReturn = episodeList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
-                toReturn.data[i].Image = downloadedBitmap(toReturn.data[i].included.images[0].attributes.medium);
+                toReturn.data[i].Image = downloadedBitmap(toReturn.data[i].included.images[0].attributes.medium, websiteClient);
                 if (ct.IsCancellationRequested)
                 {
                     return null;
@@ -147,14 +183,21 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static IBitmap downloadedBitmap(string DownloadString)
+        public static IBitmap downloadedBitmap(string DownloadString, HttpClient websiteClient)
         {
-            WebClient wc = new WebClient();
-            // Apparently they don't like people accessing the CDN, this is a work around
-            wc.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-            byte[] imageBytes = wc.DownloadData(DownloadString);
-            MemoryStream ms = new MemoryStream(imageBytes);
-            Bitmap toReturn = new Bitmap(ms);
+            HttpResponseMessage response = websiteClient.GetAsync(DownloadString).Result;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            Bitmap toReturn = new Bitmap(response.Content.ReadAsStreamAsync().Result);
             return toReturn;
         }
     }
