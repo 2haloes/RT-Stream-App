@@ -59,7 +59,7 @@ namespace RT_Stream_App.ViewModels
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
-        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap("Rooster.ico"));
+        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         #endregion
 
         #region Companies variables

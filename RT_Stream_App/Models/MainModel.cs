@@ -22,9 +22,9 @@ namespace RT_Stream_App.Models
         /// <returns></returns>
         public static settings SettingsLoad()
         {
-            if (File.Exists("settings.json"))
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "settings.json"))
             {
-                return JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+                return JsonConvert.DeserializeObject<settings>(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json"));
             }
             else
             {
@@ -35,7 +35,7 @@ namespace RT_Stream_App.Models
                     password = "",
                     theme = "Light"
                 };
-                File.WriteAllText("settings.json", JsonConvert.SerializeObject(newSettings));
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json", JsonConvert.SerializeObject(newSettings));
                 return newSettings;
             }
         }
@@ -150,7 +150,7 @@ namespace RT_Stream_App.Models
             {
                 return null;
             }
-            File.WriteAllLines("VideoLink.m3u8", fileToOpen);
+            File.WriteAllLines(AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8", fileToOpen);
             return toReturn;
         }
 
