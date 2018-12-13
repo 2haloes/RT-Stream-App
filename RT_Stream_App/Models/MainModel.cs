@@ -13,6 +13,8 @@ namespace RT_Stream_App.Models
     public static class MainModel
     {
 
+        public const string siteURL = "https://svod-be.roosterteeth.com";
+
         public static settings SettingsLoad()
         {
             if (File.Exists("settings.json"))
@@ -45,13 +47,13 @@ namespace RT_Stream_App.Models
 
         public static TOut loadAPI<TOut>(string refLink)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + refLink));
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString(siteURL + refLink));
             return toReturn;
         }
 
         public static TOut loadAPI<TOut>(string nextLink, int pageCount, int perPage)
         {
-            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString("https://svod-be.roosterteeth.com" + nextLink + "?page=" + pageCount + "&per_page=" + perPage));
+            TOut toReturn = JsonConvert.DeserializeObject<TOut>(new WebClient().DownloadString(siteURL + nextLink + "?page=" + pageCount + "&per_page=" + perPage));
             return toReturn;
         }
 

@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -29,6 +30,8 @@ namespace RT_Stream_App.ViewModels
         public MainWindowViewModel()
         {
             appSettings = MainModel.SettingsLoad();
+            websiteClient = new HttpClient();
+            websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels").data;
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
@@ -50,9 +53,10 @@ namespace RT_Stream_App.ViewModels
         }
         #region Global variables
         private settings _appSettings;
+        private HttpClient _websiteClient;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
-        public const string rtURL = "https://svod-be.roosterteeth.com";
+        public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
         #endregion
 
         #region Companies variables
