@@ -16,6 +16,10 @@ namespace RT_Stream_App.Models
 
         public const string siteURL = "https://svod-be.roosterteeth.com";
 
+        /// <summary>
+        /// Loads the settings (Or creates the settings file on first load)
+        /// </summary>
+        /// <returns></returns>
         public static settings SettingsLoad()
         {
             if (File.Exists("settings.json"))
@@ -36,6 +40,10 @@ namespace RT_Stream_App.Models
             }
         }
 
+        /// <summary>
+        /// Saves the amount of episodes to load per page when the value is changed
+        /// </summary>
+        /// <param name="currentSettings"></param>
         public static void SavePageCount(settings currentSettings)
         {
             if (currentSettings.page_length != 0)

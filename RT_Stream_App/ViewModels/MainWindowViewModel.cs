@@ -57,6 +57,7 @@ namespace RT_Stream_App.ViewModels
         private HttpClient _websiteClient;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
+        // This is passed to all methods that download (for API and video link calls)
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap("Rooster.ico"));
         #endregion
@@ -141,7 +142,6 @@ namespace RT_Stream_App.ViewModels
         public async Task LoadShowsAsync(CancellationToken ct)
         {
             ShowLoadText = "Loading API";
-            //shows.APIData tmpShows = await Task.Run(() => MainModel.loadShows(selectedCompany, ct));
             shows.APIData tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient));
             if (ct.IsCancellationRequested)
             {
@@ -202,6 +202,10 @@ namespace RT_Stream_App.ViewModels
             SeasonLoadText = "";
         }
 
+        /// <summary>
+        /// Checks if the video can be played (Will be adjusted when logging in is possible)
+        /// </summary>
+        /// <returns></returns>
         public async Task LoadVideoAsync()
         {
             if (selectedEpisode == null)
@@ -247,6 +251,7 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
+            // This checks the OS as each OS has a different method of opening with the default program
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 ProcessStartInfo psi = new ProcessStartInfo
