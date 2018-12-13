@@ -2,6 +2,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <ApplicationIcon>Rooster.ico</ApplicationIcon>
+    <Version>0.8.0</Version>
+    <Authors>Rhys Henson</Authors>
+    <Company>N/A</Company>
+    <Description>A program to allow for streaming Rooster Teeth videos though a local media player</Description>
+    <Copyright>Rhys Henson</Copyright>
+    <PackageLicenseUrl>https://www.mozilla.org/en-US/MPL/2.0/</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/2haloes/RT-Stream-App</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/2haloes/RT-Stream-App.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageReleaseNotes>Beta release, should work fully for public videos. VLC suggested</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
@@ -18,5 +29,10 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Prism.Core" Version="7.1.0.431" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Rooster.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

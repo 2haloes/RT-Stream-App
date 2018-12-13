@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Avalonia.Media.Imaging;
+using Prism.Commands;
 using RT_Stream_App.Classes;
 using RT_Stream_App.Models;
 using System;
@@ -57,6 +58,7 @@ namespace RT_Stream_App.ViewModels
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
+        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap("Rooster.ico"));
         #endregion
 
         #region Companies variables
