@@ -9,7 +9,7 @@ namespace RT_Stream_App.Classes
         private int _page_length;
         private string _username;
         private string _password;
-        private string _theme;
+        private int _theme;
 
         public int page_length
         {
@@ -26,7 +26,7 @@ namespace RT_Stream_App.Classes
             get => _password;
             set => SetField(ref _password, value);
         }
-        public string theme
+        public int theme
         {
             get => _theme;
             set => SetField(ref _theme, value);

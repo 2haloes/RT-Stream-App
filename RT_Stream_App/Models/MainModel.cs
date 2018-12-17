@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RT_Stream_App.Classes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -33,10 +34,26 @@ namespace RT_Stream_App.Models
                     page_length = 20,
                     username = "",
                     password = "",
-                    theme = "Light"
+                    theme = 0
                 };
                 File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json", JsonConvert.SerializeObject(newSettings));
                 return newSettings;
+            }
+        }
+
+        public static ObservableCollection<themes> ThemesLoad()
+        {
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "themes.json"))
+            {
+                return JsonConvert.DeserializeObject<ObservableCollection<themes>>(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "themes.json"));
+            }
+            else
+            {
+                ObservableCollection<themes> toReturn = new ObservableCollection<themes>();
+                toReturn.Add(new themes("black", "white", "Light"));
+                toReturn.Add(new themes("white", "black", "Dark"));
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "themes.json", JsonConvert.SerializeObject(toReturn));
+                return toReturn;
             }
         }
 

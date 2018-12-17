@@ -31,6 +31,8 @@ namespace RT_Stream_App.ViewModels
         public MainWindowViewModel()
         {
             appSettings = MainModel.SettingsLoad();
+            ThemeList = MainModel.ThemesLoad();
+            selectedTheme = ThemeList[appSettings.theme];
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
@@ -55,11 +57,15 @@ namespace RT_Stream_App.ViewModels
         #region Global variables
         private settings _appSettings;
         private HttpClient _websiteClient;
+        private ObservableCollection<themes> _themeList;
+        private themes _selectedTheme;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
+        public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
+        public themes selectedTheme { get => _selectedTheme; set => SetField(ref _selectedTheme, value); }
         #endregion
 
         #region Companies variables
