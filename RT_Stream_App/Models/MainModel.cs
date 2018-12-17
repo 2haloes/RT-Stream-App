@@ -178,7 +178,7 @@ namespace RT_Stream_App.Models
             fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None);
             for (int i = 0; i < fileToOpen.Length; i++)
             {
-                if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS"))
+                if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS") || fileToOpen[i].Contains("P.m3u8") || fileToOpen[i].Contains("p.m3u8"))
                 {
                     fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];
                 }
