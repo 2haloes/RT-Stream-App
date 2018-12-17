@@ -41,6 +41,10 @@ namespace RT_Stream_App.Models
             }
         }
 
+        /// <summary>
+        /// Loads the themes file or creates the default if one doesn't exist (Custom themes can be created)
+        /// </summary>
+        /// <returns></returns>
         public static ObservableCollection<themes> ThemesLoad()
         {
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "themes.json"))
@@ -50,8 +54,16 @@ namespace RT_Stream_App.Models
             else
             {
                 ObservableCollection<themes> toReturn = new ObservableCollection<themes>();
-                toReturn.Add(new themes("black", "white", "Light"));
-                toReturn.Add(new themes("white", "black", "Dark"));
+                toReturn.Add(new themes("black", "white", "white", "Light"));
+                toReturn.Add(new themes("white", "black", "black", "Dark"));
+                toReturn.Add(new themes("black", "white", "crimson", "RT Light"));
+                toReturn.Add(new themes("white", "black", "red", "RT Dark"));
+                toReturn.Add(new themes("black", "white", "limegreen", "AH Light"));
+                toReturn.Add(new themes("white", "black", "limegreen", "AH Dark"));
+                toReturn.Add(new themes("black", "white", "orange", "FH Light"));
+                toReturn.Add(new themes("white", "black", "orange", "FH Dark"));
+                toReturn.Add(new themes("black", "white", "deepskyblue", "SA Light"));
+                toReturn.Add(new themes("white", "black", "dodgerblue", "SA Dark"));
                 File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "themes.json", JsonConvert.SerializeObject(toReturn));
                 return toReturn;
             }
@@ -69,6 +81,14 @@ namespace RT_Stream_App.Models
                 oldSettings.page_length = currentSettings.page_length;
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
             }
+        }
+
+        
+        public static void SaveTheme(settings currentSettings)
+        {
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            oldSettings.theme = currentSettings.theme;
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
         }
 
         public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient)

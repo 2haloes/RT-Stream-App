@@ -65,7 +65,7 @@ namespace RT_Stream_App.ViewModels
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
-        public themes selectedTheme { get => _selectedTheme; set => SetField(ref _selectedTheme, value); }
+        public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
         #endregion
 
         #region Companies variables

@@ -12,26 +12,26 @@
 
   <Window.Styles>
     <Style Selector="ListBox">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol}" />
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol}" />
+      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
+      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="Window">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol}" />
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol}" />
+      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
+      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="DropDown">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol}" />
+      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
     </Style>
     <Style Selector="StackPanel">
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol}" />
+      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="TextBox">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol}" />
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol}" />
+      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
+      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="Button">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol}" />
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol}" />
+      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
+      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
   </Window.Styles>
   
