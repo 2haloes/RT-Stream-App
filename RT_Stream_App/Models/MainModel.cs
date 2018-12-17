@@ -178,6 +178,8 @@ namespace RT_Stream_App.Models
             fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None);
             for (int i = 0; i < fileToOpen.Length; i++)
             {
+                // This has somehow been the worst part of the program as of themes being completed, if I have to change this again, I may have to change my approch
+                // hls are for newer videos, p.m3u8 is for older videos such as season 1 of Million Dollars But
                 if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS") || fileToOpen[i].Contains("P.m3u8") || fileToOpen[i].Contains("p.m3u8"))
                 {
                     fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];

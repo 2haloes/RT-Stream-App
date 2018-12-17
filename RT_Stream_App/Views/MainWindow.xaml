@@ -172,8 +172,8 @@
           <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.display_title}" HorizontalAlignment="Center" FontSize="24"></TextBlock>
-        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.caption}" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.display_title}" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="24"></TextBlock>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding selectedEpisode.attributes.caption}" TextWrapping="Wrap" HorizontalAlignment="Center"></TextBlock>
         <Image Grid.Row="2" Grid.ColumnSpan="2" Source="{Binding selectedEpisode.Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Image>
         <TextBlock Grid.Row="3" Grid.Column="0" Text="{Binding selectedEpisode.lengthTimeDisplay}" HorizontalAlignment="Center"></TextBlock>
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding selectedEpisode.attributes.is_sponsors_only, FallbackValue=false}" HorizontalAlignment="Center"/>
