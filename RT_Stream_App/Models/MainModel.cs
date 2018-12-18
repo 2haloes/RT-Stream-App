@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -16,6 +17,7 @@ namespace RT_Stream_App.Models
     {
 
         public const string siteURL = "https://svod-be.roosterteeth.com";
+        public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
 
         /// <summary>
         /// Loads the settings (Or creates the settings file on first load)
@@ -34,7 +36,8 @@ namespace RT_Stream_App.Models
                     page_length = 20,
                     username = "",
                     password = "",
-                    theme = 0
+                    theme = 0,
+                    quality = 4
                 };
                 File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json", JsonConvert.SerializeObject(newSettings));
                 return newSettings;
@@ -88,6 +91,13 @@ namespace RT_Stream_App.Models
         {
             settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
             oldSettings.theme = currentSettings.theme;
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+        }
+
+        public static void SaveQuality(settings currentSettings)
+        {
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            oldSettings.quality = currentSettings.quality;
             File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
         }
 
@@ -154,7 +164,7 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static videos.APIData loadVideos(videos.APIData toReturn, HttpClient websiteClient, CancellationToken ct)
+        public static videos.APIData loadVideos(videos.APIData toReturn, HttpClient websiteClient, int selectedQuality, CancellationToken ct)
         {
             // If the MainViewModel CancelltationToken requests this to be canceled then it will return null data
             // If a video is not avliable to view (due to not be open to the public) then the JSON returns an access value
@@ -162,7 +172,7 @@ namespace RT_Stream_App.Models
             {
                 return null;
             }
-            string[] fileToOpen;
+            List<string> fileToOpen;
             HttpResponseMessage response = websiteClient.GetAsync(toReturn.data[0].attributes.url).Result;
 
             try
@@ -175,8 +185,9 @@ namespace RT_Stream_App.Models
                 throw;
             }
 
-            fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None);
-            for (int i = 0; i < fileToOpen.Length; i++)
+            fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+            fileToOpen = extractQuality(fileToOpen, selectedQuality);
+            for (int i = 0; i < fileToOpen.Count; i++)
             {
                 // This has somehow been the worst part of the program as of themes being completed, if I have to change this again, I may have to change my approch
                 // hls are for newer videos, p.m3u8 is for older videos such as season 1 of Million Dollars But
@@ -246,6 +257,36 @@ namespace RT_Stream_App.Models
 
             Bitmap toReturn = new Bitmap(response.Content.ReadAsStreamAsync().Result);
             return toReturn;
+        }
+
+        public static List<string> extractQuality(List<string> fileContent, int qualityToken)
+        {
+            //string[] tmpString;
+            // NOTE: I actually have no idea if the 4k is correct. It's borderline impossible to find a video with 4K
+            if (fileContent.Any(qualityList[qualityToken].Contains) || fileContent.Any("238".Contains))
+            {
+                for (int i = 0; i < fileContent.Count; i++)
+                {
+                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ",") || fileContent[i].Contains("x238,"))
+                    {
+                        continue;
+                    }
+                    else if (fileContent[i].Contains("-STREAM-INF"))
+                    {
+                        fileContent.RemoveRange(i, 2);
+                        i--;
+                    }
+                }
+            }
+            else if (qualityToken == 0)
+            {
+                return fileContent;
+            }
+            else
+            {
+                return extractQuality(fileContent, (qualityToken - 1));
+            }
+            return fileContent;
         }
     }
 }

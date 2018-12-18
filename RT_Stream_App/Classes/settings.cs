@@ -10,6 +10,7 @@ namespace RT_Stream_App.Classes
         private string _username;
         private string _password;
         private int _theme;
+        private int _quality;
 
         public int page_length
         {
@@ -30,6 +31,12 @@ namespace RT_Stream_App.Classes
         {
             get => _theme;
             set => SetField(ref _theme, value);
+        }
+
+        public int quality
+        {
+            get => _quality;
+            set => SetField(ref _quality, value);
         }
     }
 }

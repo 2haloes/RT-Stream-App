@@ -33,6 +33,8 @@ namespace RT_Stream_App.ViewModels
             appSettings = MainModel.SettingsLoad();
             ThemeList = MainModel.ThemesLoad();
             selectedTheme = ThemeList[appSettings.theme];
+            QualityList = new ObservableCollection<string>() { "240", "360", "480", "720", "1080", "4K" };
+            selectedQuality = QualityList[appSettings.quality];
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
@@ -59,6 +61,8 @@ namespace RT_Stream_App.ViewModels
         private HttpClient _websiteClient;
         private ObservableCollection<themes> _themeList;
         private themes _selectedTheme;
+        private ObservableCollection<string> _qualityList;
+        private string _selectedQuality;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
@@ -66,6 +70,8 @@ namespace RT_Stream_App.ViewModels
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
         public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
+        public ObservableCollection<string> QualityList { get => _qualityList; set => SetField(ref _qualityList, value); }
+        public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
         #endregion
 
         #region Companies variables
@@ -251,7 +257,7 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, websiteClient, ct));
+            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, websiteClient, appSettings.quality, ct));
             ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
             {
