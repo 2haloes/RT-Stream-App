@@ -72,6 +72,7 @@ namespace RT_Stream_App.ViewModels
             MainModel.aesKeyLoad();
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
+            
         }
         #region Global variables
         private settings _appSettings;
@@ -297,6 +298,8 @@ namespace RT_Stream_App.ViewModels
         /// <returns></returns>
         public async Task LoadVideoPlayerAsync(CancellationToken ct)
         {
+            // Impliment this somewhere!
+            // MainModel.loginToAPI(websiteClient, appSettings.username, appSettings.password);
             if (selectedEpisode == null)
             {
                 return;

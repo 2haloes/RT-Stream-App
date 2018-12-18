@@ -19,6 +19,7 @@ namespace RT_Stream_App.Models
     {
 
         public const string siteURL = "https://svod-be.roosterteeth.com";
+        public const string loginURL = "https://auth.roosterteeth.com/oauth/token";
         public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
         
         /// <summary>
@@ -327,6 +328,27 @@ namespace RT_Stream_App.Models
             {
                 return EncryptProvider.AESDecrypt(detail, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
             }
+        }
+
+        public static void loginToAPI(HttpClient websiteClient, string usernameCrypt, string passwordCrypt)
+        {
+            loginPOST toPOST = new loginPOST(decryptDetails(usernameCrypt), decryptDetails(passwordCrypt));
+            string playloadString = JsonConvert.SerializeObject(toPOST);
+            HttpContent POSTContent = new StringContent(playloadString);
+            HttpResponseMessage response = websiteClient.PostAsync(loginURL, POSTContent).Result;
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            string content = response.Content.ReadAsStringAsync().Result;
+            
         }
     }
 }
