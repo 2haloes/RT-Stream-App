@@ -150,16 +150,25 @@
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+          <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
       
-      <TextBlock Grid.Column="0" Grid.Row="0" Margin="20" Text="Amount of results per page:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
-      <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+        <TextBlock Grid.Column="0" Grid.Row="0" Margin="20" Text="Amount of results per page:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
+        <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
 
-      <TextBlock Grid.Column="0" Grid.Row="1" Margin="20" Text="Theme:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
-      <DropDown Items="{Binding ThemeList}" SelectedItem="{Binding selectedTheme}"  Margin="20,40,0,0" Height="30" Grid.Row="1" HorizontalAlignment="Stretch"></DropDown>
+        <TextBlock Grid.Column="0" Grid.Row="1" Margin="20" Text="Theme:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
+        <DropDown Items="{Binding ThemeList}" SelectedItem="{Binding selectedTheme}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch"></DropDown>
 
-      <TextBlock Grid.Column="0" Grid.Row="2" Margin="20" Text="Max quality:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
-      <DropDown Items="{Binding QualityList}" SelectedItem="{Binding selectedQuality}"  Margin="20,40,0,0" Height="30" Grid.Row="2" HorizontalAlignment="Stretch"></DropDown>
+        <TextBlock Grid.Column="0" Grid.Row="2" Margin="20" Text="Max quality:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
+        <DropDown Items="{Binding QualityList}" SelectedItem="{Binding selectedQuality}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch"></DropDown>
 
+        <TextBlock Grid.Column="1" Grid.Row="0" Margin="20" Text="Username:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
+        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+
+        <TextBlock Grid.Column="1" Grid.Row="1" Margin="20" Text="Password:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
+        <TextBox Grid.Column="1" Grid.Row="1" PasswordChar="*" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
       </Grid>
       
       <Grid Column="1" Margin="10">

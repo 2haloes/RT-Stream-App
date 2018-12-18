@@ -24,13 +24,13 @@ namespace RT_Stream_App.Classes
 
         public string foreground { get => _foreground; set => SetField( ref _foreground, value); }
         [JsonIgnore]
-        public Brush foregroundCol { get => (Brush)Brush.Parse(_foreground);}
+        public IBrush foregroundCol { get => Brush.Parse(_foreground);}
         public string background { get => _background; set => SetField( ref _background, value); }
         [JsonIgnore]
-        public Brush backgroundCol { get => (Brush)Brush.Parse(_background);}
+        public IBrush backgroundCol { get => Brush.Parse(_background);}
         public string stackBackground { get => _stackBackground; set => SetField(ref _stackBackground, value); }
         [JsonIgnore]
-        public Brush stackBackgroundCol { get => (Brush)Brush.Parse(_stackBackground); }
+        public IBrush stackBackgroundCol { get => Brush.Parse(_stackBackground); }
         public string name { get => _name; set => SetField( ref _name, value); }
 
         public override string ToString()
