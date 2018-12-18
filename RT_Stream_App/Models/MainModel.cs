@@ -112,7 +112,7 @@ namespace RT_Stream_App.Models
             catch (Exception)
             {
 
-                return default(TOut);
+                throw;
             }
 
             TOut toReturn = JsonConvert.DeserializeObject<TOut>(response.Content.ReadAsStringAsync().Result);

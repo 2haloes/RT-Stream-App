@@ -1,4 +1,5 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Controls.Primitives;
+using Avalonia.Media.Imaging;
 using Prism.Commands;
 using RT_Stream_App.Classes;
 using RT_Stream_App.Models;
@@ -30,6 +31,7 @@ namespace RT_Stream_App.ViewModels
 
         public MainWindowViewModel()
         {
+            ErrorText = "";
             appSettings = MainModel.SettingsLoad();
             ThemeList = MainModel.ThemesLoad();
             selectedTheme = ThemeList[appSettings.theme];
@@ -37,7 +39,15 @@ namespace RT_Stream_App.ViewModels
             selectedQuality = QualityList[appSettings.quality];
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-            CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
+            try
+            {
+                CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
+            }
+            catch (Exception ex)
+            {
+
+                ErrorText = "Companies failed to load, please try reloading the program: " + ex;
+            }
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
@@ -63,6 +73,7 @@ namespace RT_Stream_App.ViewModels
         private themes _selectedTheme;
         private ObservableCollection<string> _qualityList;
         private string _selectedQuality;
+        private string _errorText;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
@@ -72,6 +83,7 @@ namespace RT_Stream_App.ViewModels
         public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
         public ObservableCollection<string> QualityList { get => _qualityList; set => SetField(ref _qualityList, value); }
         public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
+        public string ErrorText { get => _errorText; set => SetField(ref _errorText, value); }
         #endregion
 
         #region Companies variables
@@ -151,10 +163,19 @@ namespace RT_Stream_App.ViewModels
         public ICommand OpenVideo { get => _loadVideoPlayer; set => SetField(ref _loadVideoPlayer, value); }
         #endregion
 
+        #region Loading from API
         public async Task LoadShowsAsync(CancellationToken ct)
         {
             ShowLoadText = "Loading API";
-            shows.APIData tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient));
+            shows.APIData tmpShows = new shows.APIData();
+            try
+            {
+                tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient));
+            }
+            catch (Exception ex)
+            {
+                ErrorText = "Shows failed to load, please try again in a minute: " + ex;
+            }
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -177,7 +198,14 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading Seasons";
-            SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
+            try
+            {
+                SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
+            }
+            catch (Exception ex)
+            {
+                ErrorText = "Seasons failed to load, please try again in a minute: " + ex;
+            }
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -192,7 +220,15 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "Loading API";
-            episodes.APIData tmpEpisodes = await Task.Run(() => MainModel.loadAPI<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount, websiteClient));
+            episodes.APIData tmpEpisodes = new episodes.APIData();
+            try
+            {
+                tmpEpisodes = await Task.Run(() => MainModel.loadAPI<episodes.APIData>(selectedSeason.links.episodes, PageNumber, pageCount, websiteClient));
+            }
+            catch (Exception ex)
+            {
+                ErrorText = "Episodes failed to load, please try again in a minute: " + ex;
+            }
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -251,13 +287,27 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             ButtonText = "Loading API";
-            // Will add a quality selector later
-            videos.APIData tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos, websiteClient));
+            videos.APIData tmpVideo = new videos.APIData(); 
+            try
+            {
+                tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos, websiteClient));
+            }
+            catch (Exception ex)
+            {
+                ErrorText = "Video API failed to load, please try again in a minute: " + ex;
+            }
             if (ct.IsCancellationRequested)
             {
                 return;
             }
-            tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, websiteClient, appSettings.quality, ct));
+            try
+            {
+                tmpVideo = await Task.Run(() => MainModel.loadVideos(tmpVideo, websiteClient, appSettings.quality, ct));
+            }
+            catch (Exception ex)
+            {
+                ErrorText = "Video file failed to load, please try again in a minute: " + ex;
+            }
             ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
             {
@@ -279,9 +329,11 @@ namespace RT_Stream_App.ViewModels
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
+                // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
                 await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
             }
         }
+        #endregion
 
         /// <summary>
         /// This calls the program to cancel the tokens for async tasks and clears the data (1 for company change, 2 for show change, 3 for season change, 4 for page change and 5 for video change)
@@ -311,12 +363,14 @@ namespace RT_Stream_App.ViewModels
                     PageList = null;
                     EpisodeTokenSource = new CancellationTokenSource();
                     EpisodeToken = EpisodeTokenSource.Token;
+                    ErrorText = "";
                     break;
                 case 4:
                     EpisodeTokenSource.Cancel();
                     EpisodeList = null;
                     EpisodeTokenSource = new CancellationTokenSource();
                     EpisodeToken = EpisodeTokenSource.Token;
+                    ErrorText = "";
                     break;
                 case 5:
                     ButtonEnable = false;
@@ -324,6 +378,7 @@ namespace RT_Stream_App.ViewModels
                     VideoTokenSource.Cancel();
                     VideoTokenSource = new CancellationTokenSource();
                     VideoToken = VideoTokenSource.Token;
+                    ErrorText = "";
                     break;
                 default:
                     break;

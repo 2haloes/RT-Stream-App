@@ -162,12 +162,13 @@
 
       </Grid>
       
-      <Grid Column="1">
+      <Grid Column="1" Margin="10">
         <Grid.RowDefinitions>
-          <RowDefinition Height="*"></RowDefinition>
-          <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="3*"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
+          <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -181,8 +182,9 @@
         <TextBlock Grid.Row="3" Grid.Column="0" Text="{Binding selectedEpisode.lengthTimeDisplay}" HorizontalAlignment="Center"></TextBlock>
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding selectedEpisode.attributes.is_sponsors_only, FallbackValue=false}" HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding selectedEpisode.sponsorTimed, FallbackValue=false}" HorizontalAlignment="Center"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding selectedEpisode.memberTimed, FallbackValue=false}" HorizontalAlignment="Center"/>  
-        <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding OpenVideo}" Content="{Binding ButtonText}" IsEnabled="{Binding ButtonEnable}"></Button>
+        <TextBlock Grid.Row="3" Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding selectedEpisode.memberTimed, FallbackValue=false}" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Text="{Binding ErrorText}" TextWrapping="Wrap" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
+        <Button Grid.Row="5" Grid.ColumnSpan="2" Command="{Binding OpenVideo}" Content="{Binding ButtonText}" IsEnabled="{Binding ButtonEnable}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Button>
       </Grid>
     </Grid>
   </Grid>
