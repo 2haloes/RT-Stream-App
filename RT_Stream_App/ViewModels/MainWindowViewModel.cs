@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls.Primitives;
 using Avalonia.Media.Imaging;
+using NETCore.Encrypt;
+using NETCore.Encrypt.Internal;
 using Prism.Commands;
 using RT_Stream_App.Classes;
 using RT_Stream_App.Models;
@@ -37,6 +39,8 @@ namespace RT_Stream_App.ViewModels
             selectedTheme = ThemeList[appSettings.theme];
             QualityList = new ObservableCollection<string>() { "240", "360", "480", "720", "1080", "4K" };
             selectedQuality = QualityList[appSettings.quality];
+            Username = MainModel.decryptDetails(appSettings.username);
+            Password = MainModel.decryptDetails(appSettings.password);
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             try
@@ -65,6 +69,9 @@ namespace RT_Stream_App.ViewModels
             VideoToken = VideoTokenSource.Token;
             LoadVideo = new DelegateCommand(async () => await LoadVideoAsync());
             OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync(VideoToken));
+            MainModel.aesKeyLoad();
+            LoginTmp = new DelegateCommand(() => SaveLoginTmp());
+            LoginSave = new DelegateCommand(() => SaveLogin());
         }
         #region Global variables
         private settings _appSettings;
@@ -74,6 +81,10 @@ namespace RT_Stream_App.ViewModels
         private ObservableCollection<string> _qualityList;
         private string _selectedQuality;
         private string _errorText;
+        private string _username;
+        private string _password;
+        private ICommand _loginTmp;
+        private ICommand _loginSave;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
@@ -84,6 +95,10 @@ namespace RT_Stream_App.ViewModels
         public ObservableCollection<string> QualityList { get => _qualityList; set => SetField(ref _qualityList, value); }
         public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
         public string ErrorText { get => _errorText; set => SetField(ref _errorText, value); }
+        public string Username { get => _username; set => SetField(ref _username, value); }
+        public string Password { get => _password; set => SetField(ref _password, value); }
+        public ICommand LoginTmp { get => _loginTmp; set => SetField(ref _loginTmp, value); }
+        public ICommand LoginSave { get => _loginSave; set => SetField(ref _loginSave, value); }
         #endregion
 
         #region Companies variables
@@ -383,6 +398,18 @@ namespace RT_Stream_App.ViewModels
                 default:
                     break;
             }
+        }
+
+        public void SaveLoginTmp()
+        {
+            appSettings.username = MainModel.encryptDetails(Username);
+            appSettings.password = MainModel.encryptDetails(Password);
+        }
+
+        public void SaveLogin()
+        {
+            SaveLoginTmp();
+            MainModel.SaveLogin(appSettings);
         }
 
 

@@ -165,10 +165,13 @@
         <DropDown Items="{Binding QualityList}" SelectedItem="{Binding selectedQuality}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch"></DropDown>
 
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="20" Text="Username:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Username}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
 
         <TextBlock Grid.Column="1" Grid.Row="1" Margin="20" Text="Password:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
-        <TextBox Grid.Column="1" Grid.Row="1" PasswordChar="*" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+        <TextBox Grid.Column="1" Grid.Row="1" PasswordChar="*" Text="{Binding Password}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
+      
+        <Button Grid.Column="1" Grid.Row="2" Command="{Binding LoginTmp}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="20,0,0,0">Temp Login</Button>
+        <Button Grid.Column="1" Grid.Row="2" Command="{Binding LoginSave}" HorizontalAlignment="Stretch" Height="30" Margin="20,20,0,0">Save Login</Button>
       </Grid>
       
       <Grid Column="1" Margin="10">

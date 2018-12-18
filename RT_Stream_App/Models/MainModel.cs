@@ -1,4 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
+using NETCore.Encrypt;
+using NETCore.Encrypt.Internal;
 using Newtonsoft.Json;
 using RT_Stream_App.Classes;
 using System;
@@ -18,7 +20,7 @@ namespace RT_Stream_App.Models
 
         public const string siteURL = "https://svod-be.roosterteeth.com";
         public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
-
+        
         /// <summary>
         /// Loads the settings (Or creates the settings file on first load)
         /// </summary>
@@ -72,6 +74,14 @@ namespace RT_Stream_App.Models
             }
         }
 
+        public static void aesKeyLoad()
+        {
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"))
+            {
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json", EncryptProvider.CreateAesKey().Key);
+            }
+        }
+
         /// <summary>
         /// Saves the amount of episodes to load per page when the value is changed
         /// </summary>
@@ -98,6 +108,14 @@ namespace RT_Stream_App.Models
         {
             settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
             oldSettings.quality = currentSettings.quality;
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+        }
+
+        public static void SaveLogin(settings currentSettings)
+        {
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            oldSettings.username = currentSettings.username;
+            oldSettings.password = currentSettings.password;
             File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
         }
 
@@ -204,8 +222,6 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-
-
         public static shows.APIData loadShowImages(shows.APIData showList, HttpClient websiteClient, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
@@ -287,6 +303,30 @@ namespace RT_Stream_App.Models
                 return extractQuality(fileContent, (qualityToken - 1));
             }
             return fileContent;
+        }
+
+        public static string encryptDetails(string detail)
+        {
+            if (String.IsNullOrWhiteSpace(detail))
+            {
+                return "";
+            }
+            else
+            {
+                return EncryptProvider.AESEncrypt(detail, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+            }
+        }
+
+        public static string decryptDetails(string detail)
+        {
+            if (String.IsNullOrWhiteSpace(detail))
+            {
+                return "";
+            }
+            else
+            {
+                return EncryptProvider.AESDecrypt(detail, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+            }
         }
     }
 }
