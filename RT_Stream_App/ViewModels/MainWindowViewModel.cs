@@ -50,7 +50,8 @@ namespace RT_Stream_App.ViewModels
             catch (Exception ex)
             {
 
-                ErrorText = "Companies failed to load, please try reloading the program: " + ex;
+                ErrorText = "Companies failed to load, please try reloading the program: " + ex.Message;
+                return;
             }
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
@@ -72,7 +73,7 @@ namespace RT_Stream_App.ViewModels
             MainModel.aesKeyLoad();
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
-            
+            LoginAlready = false;
         }
         #region Global variables
         private settings _appSettings;
@@ -86,6 +87,7 @@ namespace RT_Stream_App.ViewModels
         private string _password;
         private ICommand _loginTmp;
         private ICommand _loginSave;
+        private bool _loginAlready;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls)
@@ -100,6 +102,7 @@ namespace RT_Stream_App.ViewModels
         public string Password { get => _password; set => SetField(ref _password, value); }
         public ICommand LoginTmp { get => _loginTmp; set => SetField(ref _loginTmp, value); }
         public ICommand LoginSave { get => _loginSave; set => SetField(ref _loginSave, value); }
+        public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
         #endregion
 
         #region Companies variables
@@ -190,7 +193,9 @@ namespace RT_Stream_App.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorText = "Shows failed to load, please try again in a minute: " + ex;
+                ErrorText = "Shows failed to load, please try again in a minute: " + ex.Message;
+                ShowLoadText = "Shows";
+                return;
             }
             if (ct.IsCancellationRequested)
             {
@@ -220,7 +225,9 @@ namespace RT_Stream_App.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorText = "Seasons failed to load, please try again in a minute: " + ex;
+                ErrorText = "Seasons failed to load, please try again in a minute: " + ex.Message;
+                SeasonLoadText = "";
+                return;
             }
             if (ct.IsCancellationRequested)
             {
@@ -243,7 +250,9 @@ namespace RT_Stream_App.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorText = "Episodes failed to load, please try again in a minute: " + ex;
+                ErrorText = "Episodes failed to load, please try again in a minute: " + ex.Message;
+                SeasonLoadText = "";
+                return;
             }
             if (ct.IsCancellationRequested)
             {
@@ -276,10 +285,10 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            if (selectedEpisode.memberTimed || selectedEpisode.sponsorTimed || selectedEpisode.attributes.is_sponsors_only)
+            if ((selectedEpisode.memberTimed || selectedEpisode.sponsorTimed || selectedEpisode.attributes.is_sponsors_only) && (String.IsNullOrWhiteSpace(appSettings.username) || String.IsNullOrWhiteSpace(appSettings.password)) && LoginAlready == false)
             {
                 ButtonEnable = false;
-                ButtonText = "Cannot play videos that require login";
+                ButtonText = "Please enter login details or select a public video";
                 return;
             }
             else
@@ -305,6 +314,22 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             ButtonText = "Loading API";
+            if ((selectedEpisode.memberTimed || selectedEpisode.sponsorTimed || selectedEpisode.attributes.is_sponsors_only) && LoginAlready == false)
+            {
+                try
+                {
+                    MainModel.loginToAPI(websiteClient, appSettings.username, appSettings.password);
+                    LoginAlready = true;
+                }
+                catch (Exception ex)
+                {
+
+                    ErrorText = "Login failed: " + ex.Message;
+                    ButtonText = "Play Video";
+                    return;
+                }
+                
+            }
             videos.APIData tmpVideo = new videos.APIData(); 
             try
             {
@@ -324,7 +349,9 @@ namespace RT_Stream_App.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorText = "Video file failed to load, please try again in a minute: " + ex;
+                ErrorText = "Video file failed to load, please try again in a minute: " + ex.Message;
+                ButtonText = "Play Video";
+                return;
             }
             ButtonText = "Play Video";
             if (ct.IsCancellationRequested)
@@ -407,6 +434,7 @@ namespace RT_Stream_App.ViewModels
         {
             appSettings.username = MainModel.encryptDetails(Username);
             appSettings.password = MainModel.encryptDetails(Password);
+            LoadVideo.Execute(null);
         }
 
         public void SaveLogin()
