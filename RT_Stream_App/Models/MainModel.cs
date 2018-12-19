@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using NETCore.Encrypt;
+using NETCore.Encrypt.Internal;
 using Newtonsoft.Json;
 using RT_Stream_App.Classes;
 using System;
@@ -7,7 +8,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 
 namespace RT_Stream_App.Models
@@ -17,6 +20,7 @@ namespace RT_Stream_App.Models
 
         public const string siteURL = "https://svod-be.roosterteeth.com";
         public const string loginURL = "https://auth.roosterteeth.com/oauth/token";
+        public static readonly string settingFile = (AppDomain.CurrentDomain.BaseDirectory + "settings.json");
         public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
         
         /// <summary>
@@ -25,9 +29,9 @@ namespace RT_Stream_App.Models
         /// <returns></returns>
         public static settings SettingsLoad()
         {
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "settings.json"))
+            if (File.Exists(settingFile))
             {
-                return JsonConvert.DeserializeObject<settings>(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json"));
+                return JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
             }
             else
             {
@@ -39,7 +43,7 @@ namespace RT_Stream_App.Models
                     theme = 0,
                     quality = 4
                 };
-                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "settings.json", JsonConvert.SerializeObject(newSettings));
+                File.WriteAllText(settingFile, JsonConvert.SerializeObject(newSettings));
                 return newSettings;
             }
         }
@@ -88,33 +92,33 @@ namespace RT_Stream_App.Models
         {
             if (currentSettings.page_length != 0)
             {
-                settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+                settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
                 oldSettings.page_length = currentSettings.page_length;
-                File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+                File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
             }
         }
 
         
         public static void SaveTheme(settings currentSettings)
         {
-            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
             oldSettings.theme = currentSettings.theme;
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+            File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
         }
 
         public static void SaveQuality(settings currentSettings)
         {
-            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
             oldSettings.quality = currentSettings.quality;
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+            File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
         }
 
         public static void SaveLogin(settings currentSettings)
         {
-            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText("settings.json"));
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
             oldSettings.username = currentSettings.username;
             oldSettings.password = currentSettings.password;
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(oldSettings));
+            File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
         }
 
         public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient)
