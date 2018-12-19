@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RT_Stream_App.Classes
+﻿namespace RT_Stream_App.Classes
 {
     /// <summary>
     /// This is the data sent to login to the website

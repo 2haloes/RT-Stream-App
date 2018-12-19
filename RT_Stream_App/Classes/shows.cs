@@ -1,18 +1,13 @@
 ﻿using Avalonia.Media.Imaging;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Net;
-using System.Text;
 
 namespace RT_Stream_App.Classes
 {
 
     // API homepage layout
     // [Object array] data
-        // [Object] 0,1,2...
-            // Show properties
+    // [Object] 0,1,2...
+    // Show properties
 
 
     public class shows : CallChanged

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 
 namespace RT_Stream_App.Classes
 {
 
     // API homepage layout
     // [Object array] data
-        // [Object] 0,1,2...
-            // Show properties
+    // [Object] 0,1,2...
+    // Show properties
 
 
     public class videos : CallChanged

@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
 using NETCore.Encrypt;
-using NETCore.Encrypt.Internal;
 using Newtonsoft.Json;
 using RT_Stream_App.Classes;
 using System;
@@ -8,9 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 
 namespace RT_Stream_App.Models
