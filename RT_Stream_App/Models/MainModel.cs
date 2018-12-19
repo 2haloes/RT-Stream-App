@@ -223,7 +223,7 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static shows.APIData loadShowImages(shows.APIData showList, HttpClient websiteClient, CancellationToken ct)
+        public static shows.APIData loadImages(shows.APIData showList, HttpClient websiteClient, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
             for (int i = 0; i < toReturn.data.Count; i++)
@@ -244,7 +244,7 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static episodes.APIData loadEpisodeImages(episodes.APIData episodeList, HttpClient websiteClient, CancellationToken ct)
+        public static episodes.APIData loadImages(episodes.APIData episodeList, HttpClient websiteClient, CancellationToken ct)
         {
             episodes.APIData toReturn = episodeList;
             for (int i = 0; i < toReturn.data.Count; i++)
@@ -330,6 +330,13 @@ namespace RT_Stream_App.Models
             }
         }
 
+        /// <summary>
+        /// Logs into the RT Oauth page
+        /// After logging in, the information is automatically regestered to the HttpClient
+        /// </summary>
+        /// <param name="websiteClient"></param>
+        /// <param name="usernameCrypt"></param>
+        /// <param name="passwordCrypt"></param>
         public static void loginToAPI(HttpClient websiteClient, string usernameCrypt, string passwordCrypt)
         {
             loginPOST toPOST = new loginPOST(decryptDetails(usernameCrypt), decryptDetails(passwordCrypt));
@@ -346,9 +353,6 @@ namespace RT_Stream_App.Models
 
                 throw;
             }
-
-            string content = response.Content.ReadAsStringAsync().Result;
-            
         }
     }
 }

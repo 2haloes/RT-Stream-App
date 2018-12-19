@@ -62,7 +62,6 @@ namespace RT_Stream_App.Classes
         public class attributeData : CallChanged
         {
             private string _url;
-            private string _cutUrl;
 
             public string url {
                 get => _url;

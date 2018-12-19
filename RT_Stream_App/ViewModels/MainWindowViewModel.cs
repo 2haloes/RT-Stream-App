@@ -28,9 +28,6 @@ namespace RT_Stream_App.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        // use => instead of = for assigning
-        // public string Greeting => "I am testing!";
-
         public MainWindowViewModel()
         {
             ErrorText = "";
@@ -68,7 +65,7 @@ namespace RT_Stream_App.ViewModels
             ButtonText = "Select a video";
             VideoTokenSource = new CancellationTokenSource();
             VideoToken = VideoTokenSource.Token;
-            LoadVideo = new DelegateCommand(async () => await LoadVideoAsync());
+            LoadVideo = new DelegateCommand(() => LoadVideoAsync());
             OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync(VideoToken));
             MainModel.aesKeyLoad();
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
@@ -204,7 +201,7 @@ namespace RT_Stream_App.ViewModels
             // After this, thumbnails will display as they load
             ShowList = tmpShows.data;
             ShowLoadText = "Loading Thumbnails";
-            tmpShows = await Task.Run(() => MainModel.loadShowImages(tmpShows, websiteClient, ct));
+            tmpShows = await Task.Run(() => MainModel.loadImages(tmpShows, websiteClient, ct));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -267,7 +264,7 @@ namespace RT_Stream_App.ViewModels
             // After this, thumbnails will display as they load
             EpisodeList = tmpEpisodes.data;
             SeasonLoadText = "Loading Thumbnails";
-            tmpEpisodes = await Task.Run(() => MainModel.loadEpisodeImages(tmpEpisodes, websiteClient, ct));
+            tmpEpisodes = await Task.Run(() => MainModel.loadImages(tmpEpisodes, websiteClient, ct));
             if (ct.IsCancellationRequested)
             {
                 return;
@@ -279,7 +276,7 @@ namespace RT_Stream_App.ViewModels
         /// Checks if the video can be played (Will be adjusted when logging in is possible)
         /// </summary>
         /// <returns></returns>
-        public async Task LoadVideoAsync()
+        public void LoadVideoAsync()
         {
             if (selectedEpisode == null)
             {
@@ -445,7 +442,7 @@ namespace RT_Stream_App.ViewModels
 
 
         #region PropertyChanged code
-        public event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

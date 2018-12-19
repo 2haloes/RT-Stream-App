@@ -4,6 +4,10 @@ using System.Text;
 
 namespace RT_Stream_App.Classes
 {
+    /// <summary>
+    /// This is the data sent to login to the website
+    /// This is used in the mainmodel class file
+    /// </summary>
     public class loginPOST: CallChanged
     {
 
