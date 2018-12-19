@@ -1,12 +1,37 @@
 # RT-Stream-App
 A crossplatform program to play Rooster Teeth videos on low power devices
 
-This application is currently in beta, however the 0.8.1 release is fully usable for public videos
+## Minimum requirements 
+OS: Windows, OSX, Linux (no dotnet core required) or any OS that can install dotnet core
 
-This program is intended to be a completely cross platform Rooster Teeth video player (This is my second shot at it, however this seems to work a lot better than the last time)
+Screen Resolution: 640x480
 
-The current release is completely crossplatform, only requiring .NET core to be installed (The next release will remove this requirement)
+Other requirements: 
 
-The 0.8.1 (current) release package contains running scripts, a batch file for Windows and a script file for OSX/Linux (As far as I know, it works in OSX however I do not own a mac and cannot confirm this)
+Video player that can play m3u8 files (If you don't know what this means, use VLC Media Player)
+                    
+Internet connection
 
-More to come. Watch the milestone to see what's coming soon!
+
+## Features
+* Play videos from any Rooster Teeth based channel (ScrewAttack, JT Music ect.)
+* Works with most media players (Windows Media Player does **not** work)
+* Light and dark themes with custom theme support
+* Supports subtitles (tested with VLC)
+* Quality selector
+* Log in and play videos for FIRST members (RT FIRST membership required)
+* Save login details or only use them for the current session
+
+## Why make this?
+
+I am a very big fan of Rooster Teeth, however, my laptop just isn't powerful enough to run videos from the RT site properly. Then I found that everything worked great in VLC (even in HD which my laptop struggled with badly) so I decided to make a script that could pull the data and automatically open VLC.
+
+From that start, I have created, improved and built upon the idea of a program that makes it easier to view Rooster Teeth's content, making it one of my main developed programs.
+
+
+# Credits
+* JSON.NET for JSON handling
+* NetCore.Encrypt for making encryption much easier
+* Prisem.Core for making MVVM code easier to create
+* AvaloniaUI for making a dotnet core program a possible option
+* Youtube-DL for being an amazing public domain project, if it wasn't for this, I likely wouldn't have gotten anywhere
