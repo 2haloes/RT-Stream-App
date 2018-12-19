@@ -228,13 +228,13 @@ namespace RT_Stream_App.Models
             shows.APIData toReturn = showList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
-                try
-                {
-                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb, websiteClient);
-                }
-                catch (Exception)
+                if (toReturn.data[i].included.images.Count < 6)
                 {
                     toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb, websiteClient);
+                }
+                else
+                {
+                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb, websiteClient);
                 }
                 if (ct.IsCancellationRequested)
                 {
