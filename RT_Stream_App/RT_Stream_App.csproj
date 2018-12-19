@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <ApplicationIcon>Rooster.ico</ApplicationIcon>
-    <Version>0.8.0</Version>
+    <Version>1.0.0</Version>
     <Authors>Rhys Henson</Authors>
     <Company>N/A</Company>
     <Description>A program to allow for streaming Rooster Teeth videos though a local media player</Description>
@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/2haloes/RT-Stream-App</PackageProjectUrl>
     <RepositoryUrl>https://github.com/2haloes/RT-Stream-App.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageReleaseNotes>Beta release, should work fully for public videos. VLC suggested</PackageReleaseNotes>
+    <PackageReleaseNotes>Full Release. VLC media player suggested to be installed</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
