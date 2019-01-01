@@ -81,7 +81,7 @@ namespace RT_Stream_App.ViewModels
         private bool _loginAlready;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
-        // This is passed to all methods that download (for API and video link calls)
+        // This is passed to all methods that download (for API and video link calls). It is also able to store information which is how the Temp Login feature works
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
@@ -225,6 +225,7 @@ namespace RT_Stream_App.ViewModels
                 return;
             }
             SeasonLoadText = "";
+            selectedSeason = SeasonList[0];
         }
 
         public async Task LoadEpisodesAsync(CancellationToken ct, int pageCount)
@@ -391,6 +392,7 @@ namespace RT_Stream_App.ViewModels
                     SeasonList = null;
                     SeasonTokenSource = new CancellationTokenSource();
                     SeasonToken = SeasonTokenSource.Token;
+                    SeasonLoadText = "";
                     CancelTokens(3);
                     break;
                 case 3:
