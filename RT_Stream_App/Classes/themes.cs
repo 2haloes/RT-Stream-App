@@ -29,6 +29,8 @@ namespace RT_Stream_App.Classes
         [JsonIgnore]
         public IBrush stackBackgroundCol { get => Brush.Parse(_stackBackground); }
         public string name { get => _name; set => SetField( ref _name, value); }
+        [JsonIgnore]
+        public IBrush refreshBackgroudnCol { get => Brush.Parse("white"); }
 
         public override string ToString()
         {
