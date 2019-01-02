@@ -302,7 +302,7 @@ namespace RT_Stream_App.ViewModels
         }
 
         /// <summary>
-        /// Checks if the video can be played (Will be adjusted when logging in is possible)
+        /// Checks if the video can be played
         /// </summary>
         /// <returns></returns>
         public void LoadVideoAsync()
