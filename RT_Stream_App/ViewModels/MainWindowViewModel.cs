@@ -57,6 +57,7 @@ namespace RT_Stream_App.ViewModels
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;
             RefreshIcon = new Bitmap("refresh.png");
+            RecentImage = new Bitmap("recent.png");
             LoadCompanies.Execute(null);
         }
         #region Global variables
@@ -110,6 +111,7 @@ namespace RT_Stream_App.ViewModels
         private string _showLoadText;
         private CancellationTokenSource _showsTokenSource;
         private CancellationToken _showsToken;
+        private Bitmap _recentImage;
         private ICommand _loadSeasons;
 
         public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
@@ -117,6 +119,7 @@ namespace RT_Stream_App.ViewModels
         public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
         public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
         public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
+        public Bitmap RecentImage { get => _recentImage; set => SetField(ref _recentImage, value); }
 
         public ICommand LoadSeasons { get => _loadSeasons; set => SetField(ref _loadSeasons, value); }
         #endregion
@@ -214,6 +217,7 @@ namespace RT_Stream_App.ViewModels
             }
             // After this, thumbnails will display as they load
             ShowList = tmpShows.data;
+            ShowList.Insert(0, MainModel.insertRecent(selectedCompany.attributes.slug, RecentImage));
             ShowLoadText = "Loading Thumbnails";
             tmpShows = await Task.Run(() => MainModel.loadImages(tmpShows, websiteClient, ct));
             if (ct.IsCancellationRequested)

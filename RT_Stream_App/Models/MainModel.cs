@@ -227,7 +227,7 @@ namespace RT_Stream_App.Models
         public static shows.APIData loadImages(shows.APIData showList, HttpClient websiteClient, CancellationToken ct)
         {
             shows.APIData toReturn = showList;
-            for (int i = 0; i < toReturn.data.Count; i++)
+            for (int i = 1; i < toReturn.data.Count; i++)
             {
                 if (toReturn.data[i].included.images.Count < 6)
                 {
@@ -275,6 +275,23 @@ namespace RT_Stream_App.Models
 
             Bitmap toReturn = new Bitmap(response.Content.ReadAsStreamAsync().Result);
             return toReturn;
+        }
+
+        public static shows.showData insertRecent(string companyString, Bitmap recentImage)
+        {
+            return new shows.showData()
+            {
+                attributes = new shows.attributeData()
+                {
+                    title = "Recent episodes",
+                    is_sponsors_only = false
+                },
+                links = new shows.linkData()
+                {
+                    seasons = "/api/v1/channels/" + companyString + "episodes"
+                },
+                thumbImage = recentImage
+            };
         }
 
         public static List<string> extractQuality(List<string> fileContent, int qualityToken)

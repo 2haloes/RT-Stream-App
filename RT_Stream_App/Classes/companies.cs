@@ -59,10 +59,16 @@ namespace RT_Stream_App.Classes
         public class attributeData : CallChanged
         {
             private string _name;
+            private string _slug;
 
             public string name {
                 get => _name;
                 set => SetField(ref _name, value);
+            }
+            public string slug
+            {
+                get => _slug;
+                set => SetField(ref _slug, value);
             }
         }
 
