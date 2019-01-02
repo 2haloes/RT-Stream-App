@@ -288,9 +288,24 @@ namespace RT_Stream_App.Models
                 },
                 links = new shows.linkData()
                 {
-                    seasons = "/api/v1/channels/" + companyString + "episodes"
+                    seasons = "/api/v1/channels/" + companyString + "/episodes?page=1"
                 },
                 thumbImage = recentImage
+            };
+        }
+
+        public static seasons.seasonData recentSeason(string linkString)
+        {
+            return new seasons.seasonData()
+            {
+                attributes = new seasons.attributeData()
+                {
+                    title = "Recent Episodes"
+                },
+                links = new seasons.linkData()
+                {
+                    episodes = linkString
+                }
             };
         }
 

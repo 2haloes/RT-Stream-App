@@ -233,16 +233,26 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            SeasonLoadText = "Loading Seasons";
-            try
+            if (selectedShow.thumbImage == RecentImage)
             {
-                SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
+                SeasonList = new ObservableCollection<seasons.seasonData>()
+                {
+                    MainModel.recentSeason(selectedShow.links.seasons)
+                };
             }
-            catch (Exception ex)
+            else
             {
-                ErrorText = "Seasons failed to load, please try again in a minute: " + ex.Message;
-                SeasonLoadText = "";
-                return;
+                SeasonLoadText = "Loading Seasons";
+                try
+                {
+                    SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = "Seasons failed to load, please try again in a minute: " + ex.Message;
+                    SeasonLoadText = "";
+                    return;
+                }
             }
             if (ct.IsCancellationRequested)
             {
