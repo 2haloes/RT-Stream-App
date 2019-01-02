@@ -183,7 +183,7 @@ namespace RT_Stream_App.ViewModels
             CancelTokens(1);
             try
             {
-                CompanyList = await Task.Run(() => MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data);
+                CompanyList = await Task.Run(() => MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient, appSettings).data);
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace RT_Stream_App.ViewModels
             shows.APIData tmpShows = new shows.APIData();
             try
             {
-                tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient));
+                tmpShows = await Task.Run(() => MainModel.loadAPI<shows.APIData>(selectedCompany.links.shows, websiteClient, appSettings));
             }
             catch (Exception ex)
             {
@@ -245,7 +245,7 @@ namespace RT_Stream_App.ViewModels
                 SeasonLoadText = "Loading Seasons";
                 try
                 {
-                    SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient).data);
+                    SeasonList = await Task.Run(() => MainModel.loadAPI<seasons.APIData>(selectedShow.links.seasons, websiteClient, appSettings).data);
                 }
                 catch (Exception ex)
                 {
@@ -333,8 +333,6 @@ namespace RT_Stream_App.ViewModels
         /// <returns></returns>
         public async Task LoadVideoPlayerAsync(CancellationToken ct)
         {
-            // Impliment this somewhere!
-            // MainModel.loginToAPI(websiteClient, appSettings.username, appSettings.password);
             if (selectedEpisode == null)
             {
                 return;
@@ -354,16 +352,16 @@ namespace RT_Stream_App.ViewModels
                     ButtonText = "Play Video";
                     return;
                 }
-                
+
             }
             videos.APIData tmpVideo = new videos.APIData(); 
             try
             {
-                tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos, websiteClient));
+                tmpVideo = await Task.Run(() => MainModel.loadAPI<videos.APIData>(selectedEpisode.links.videos, websiteClient, appSettings));
             }
             catch (Exception ex)
             {
-                ErrorText = "Video API failed to load, please try again in a minute: " + ex;
+                ErrorText = "Video API failed to load, please try again in a minute: " + ex.Message;
             }
             if (ct.IsCancellationRequested)
             {

@@ -121,9 +121,15 @@ namespace RT_Stream_App.Models
             File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
         }
 
-        public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient)
+        public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient, settings settingsVars)
         {
             HttpResponseMessage response = websiteClient.GetAsync(siteURL + refLink).Result;
+
+            if (response.StatusCode == HttpStatusCode.Forbidden && !(String.IsNullOrWhiteSpace(settingsVars.username) || String.IsNullOrWhiteSpace(settingsVars.password)))
+            {
+                loginToAPI(websiteClient, settingsVars.username, settingsVars.password);
+                response = websiteClient.GetAsync(siteURL + refLink).Result;
+            }
 
             try
             {
