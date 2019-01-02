@@ -32,6 +32,9 @@
     <PackageReference Include="Prism.Core" Version="7.1.0.431" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="refresh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Rooster.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

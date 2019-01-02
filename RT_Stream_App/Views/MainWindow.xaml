@@ -52,6 +52,9 @@
       </Grid.ColumnDefinitions>
       
       <TextBlock Grid.Row="0" Grid.Column="0" Name="CompanyText" Text="Companies" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Button Grid.Row="0" Grid.Column="0" Command="{Binding LoadCompanies}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="32" Height="32">
+        <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+      </Button>
       <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -63,6 +66,9 @@
       </ListBox>
 
       <TextBlock Grid.Row="0" Grid.Column="1" Name="ShowText" Text="{Binding ShowLoadText}" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Button Grid.Row="0" Grid.Column="1" Command="{Binding LoadShows}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="32" Height="32">
+        <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+      </Button>
       <ListBox Grid.Row="1" Grid.Column="1" Items="{Binding ShowList}" SelectedItem="{Binding selectedShow}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
@@ -80,21 +86,28 @@
         </ListBox.ItemTemplate>
       </ListBox>
       
-      <TextBlock Grid.Row="0" Grid.Column="2" Text="Seasons/Episodes" IsVisible="{Binding SeasonPlaceholderText}" Margin="20,0,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
+      <TextBlock Grid.Row="0" Grid.Column="2" Text="Seasons/Episodes" IsVisible="{Binding SeasonPlaceholderText}" Margin="20,0,57,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,57,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
+      <Button Grid.Row="0" Grid.Column="2" Command="{Binding LoadSeasons}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,20,0" Width="28" Height="28">
+        <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+      </Button>
       <Grid Grid.Row="1" Grid.Column="2">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"></RowDefinition>
           <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
           <Grid Grid.Row="1" Margin="0,0,20,0" >
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.5*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-          </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="2.5*"></ColumnDefinition>
+              <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
           <TextBlock Grid.Column="0" Text="{Binding SeasonLoadText}"  Margin="20,0,20,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
           <TextBlock Grid.Column="1" Text="Page" IsVisible="{Binding PagePlaceholderText}"  Margin="0,5,0,0" HorizontalAlignment="Center"></TextBlock>
           <DropDown Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></DropDown>
+          <Button Grid.Column="0" Command="{Binding LoadEpisodes}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28">
+            <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+          </Button>
+          
         </Grid>
       
       

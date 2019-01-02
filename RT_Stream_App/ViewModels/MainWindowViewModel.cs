@@ -34,16 +34,7 @@ namespace RT_Stream_App.ViewModels
             Password = MainModel.decryptDetails(appSettings.password);
             websiteClient = new HttpClient();
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-            try
-            {
-                CompanyList = MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data;
-            }
-            catch (Exception ex)
-            {
-
-                ErrorText = "Companies failed to load, please try reloading the program: " + ex.Message;
-                return;
-            }
+            LoadCompanies = new DelegateCommand(async () => await LoadCompaniesAsync());
             ShowLoadText = "Shows";
             ShowsTokenSource = new CancellationTokenSource();
             ShowsToken = ShowsTokenSource.Token;
@@ -65,6 +56,8 @@ namespace RT_Stream_App.ViewModels
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;
+            RefreshIcon = new Bitmap("refresh.png");
+            LoadCompanies.Execute(null);
         }
         #region Global variables
         private settings _appSettings;
@@ -79,6 +72,7 @@ namespace RT_Stream_App.ViewModels
         private ICommand _loginTmp;
         private ICommand _loginSave;
         private bool _loginAlready;
+        private Bitmap _refreshIcon;
 
         public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
         // This is passed to all methods that download (for API and video link calls). It is also able to store information which is how the Temp Login feature works
@@ -94,16 +88,20 @@ namespace RT_Stream_App.ViewModels
         public ICommand LoginTmp { get => _loginTmp; set => SetField(ref _loginTmp, value); }
         public ICommand LoginSave { get => _loginSave; set => SetField(ref _loginSave, value); }
         public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
+        public Bitmap RefreshIcon { get => _refreshIcon; set => SetField(ref _refreshIcon, value); }
         #endregion
 
         #region Companies variables
         private companies.companyData _selectedCompany;
         private ObservableCollection<companies.companyData> _companyList;
+        private ICommand _loadCompanies;
+        private ICommand _loadShows;
 
         public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); CancelTokens(1); LoadShows.Execute(null); } }
         public ObservableCollection<companies.companyData> CompanyList { get => _companyList; set => SetField(ref _companyList, value); }
 
-        public ICommand LoadShows;
+        public ICommand LoadCompanies { get => _loadCompanies; set => SetField(ref _loadCompanies, value); }
+        public ICommand LoadShows { get => _loadShows; set => SetField(ref _loadShows, value); }
         #endregion
 
         #region Shows variables
@@ -112,6 +110,7 @@ namespace RT_Stream_App.ViewModels
         private string _showLoadText;
         private CancellationTokenSource _showsTokenSource;
         private CancellationToken _showsToken;
+        private ICommand _loadSeasons;
 
         public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
         public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); CancelTokens(2); LoadSeasons.Execute(null); } }
@@ -119,7 +118,7 @@ namespace RT_Stream_App.ViewModels
         public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
         public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
 
-        public ICommand LoadSeasons;
+        public ICommand LoadSeasons { get => _loadSeasons; set => SetField(ref _loadSeasons, value); }
         #endregion
 
         #region Season variables
@@ -128,6 +127,7 @@ namespace RT_Stream_App.ViewModels
         private ObservableCollection<seasons.seasonData> _seasonList;
         private seasons.seasonData _selectedSeason;
         private string _seasonLoadText;
+        private ICommand _loadEpisodes;
 
         public CancellationTokenSource SeasonTokenSource { get => _seasonTokenSource; set => SetField(ref _seasonTokenSource, value); }
         public CancellationToken SeasonToken { get => _seasonToken; set => SetField(ref _seasonToken, value); }
@@ -135,7 +135,7 @@ namespace RT_Stream_App.ViewModels
         public string SeasonLoadText { get => _seasonLoadText; set => SetField(ref _seasonLoadText, value); }
         public bool SeasonPlaceholderText { get { return selectedSeason == null ? true : false; } }
         public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); OnPropertyChanged("SeasonPlaceholderText"); CancelTokens(3); LoadEpisodes.Execute(null); } }
-        public ICommand LoadEpisodes;
+        public ICommand LoadEpisodes { get => _loadEpisodes; set => SetField(ref _loadEpisodes, value); }
         #endregion
 
         #region Episodes variables
@@ -146,6 +146,7 @@ namespace RT_Stream_App.ViewModels
         private bool _episodeLoadText;
         private int _pageNumber;
         private ObservableCollection<int> _pageList;
+        private ICommand _loadVideo;
 
         public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
         public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
@@ -156,7 +157,7 @@ namespace RT_Stream_App.ViewModels
         public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
         public bool PagePlaceholderText { get { return PageNumber == 0 ? true : false; } }
         public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
-        public ICommand LoadVideo;
+        public ICommand LoadVideo { get => _loadVideo; set => SetField(ref _loadVideo, value); }
         #endregion
 
         #region Video variables
@@ -174,8 +175,27 @@ namespace RT_Stream_App.ViewModels
         #endregion
 
         #region Loading from API
+        public async Task LoadCompaniesAsync()
+        {
+            CancelTokens(1);
+            try
+            {
+                CompanyList = await Task.Run(() => MainModel.loadAPI<companies.APIData>("/api/v1/channels", websiteClient).data);
+            }
+            catch (Exception ex)
+            {
+
+                ErrorText = "Companies failed to load, please try reloading the program: " + ex.Message;
+                return;
+            }
+        }
+
         public async Task LoadShowsAsync(CancellationToken ct)
         {
+            if (selectedCompany == null)
+            {
+                return;
+            }
             ShowLoadText = "Loading API";
             shows.APIData tmpShows = new shows.APIData();
             try
@@ -385,6 +405,7 @@ namespace RT_Stream_App.ViewModels
                     ShowList = null;
                     ShowsTokenSource = new CancellationTokenSource();
                     ShowsToken = ShowsTokenSource.Token;
+                    ShowLoadText = "Shows";
                     CancelTokens(2);
                     break;
                 case 2:
@@ -423,6 +444,9 @@ namespace RT_Stream_App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Stores login details for the session and will not be remembered or stored anywhere outside of the current program session
+        /// </summary>
         public void SaveLoginTmp()
         {
             appSettings.username = MainModel.encryptDetails(Username);
@@ -430,6 +454,10 @@ namespace RT_Stream_App.ViewModels
             LoadVideo.Execute(null);
         }
 
+        /// <summary>
+        /// Stores login details on the disk with encryption
+        /// If you are extremely worried about security, use the Temp login as no details are stored on the disk
+        /// </summary>
         public void SaveLogin()
         {
             SaveLoginTmp();
