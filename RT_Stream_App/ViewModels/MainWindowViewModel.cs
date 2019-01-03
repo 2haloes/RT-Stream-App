@@ -56,125 +56,122 @@ namespace RT_Stream_App.ViewModels
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;
-            RefreshIcon = new Bitmap("refresh.png");
             RecentImage = new Bitmap("recent.png");
             LoadCompanies.Execute(null);
         }
         #region Global variables
-        private settings _appSettings;
-        private HttpClient _websiteClient;
-        private ObservableCollection<themes> _themeList;
-        private themes _selectedTheme;
-        private ObservableCollection<string> _qualityList;
-        private string _selectedQuality;
-        private string _errorText;
-        private string _username;
-        private string _password;
-        private ICommand _loginTmp;
-        private ICommand _loginSave;
         private bool _loginAlready;
-        private Bitmap _refreshIcon;
+        private HttpClient _websiteClient;
+        private ICommand _loginSave;
+        private ICommand _loginTmp;
+        private ObservableCollection<string> _qualityList;
+        private ObservableCollection<themes> _themeList;
+        private settings _appSettings;
+        private string _errorText;
+        private string _password;
+        private string _selectedQuality;
+        private string _username;
+        private themes _selectedTheme;
 
-        public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
+        public Bitmap RefreshIcon => new Bitmap("refresh.png");
+        public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
         // This is passed to all methods that download (for API and video link calls). It is also able to store information which is how the Temp Login feature works
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
-        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
-        public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
-        public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
-        public ObservableCollection<string> QualityList { get => _qualityList; set => SetField(ref _qualityList, value); }
-        public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
-        public string ErrorText { get => _errorText; set => SetField(ref _errorText, value); }
-        public string Username { get => _username; set => SetField(ref _username, value); }
-        public string Password { get => _password; set => SetField(ref _password, value); }
-        public ICommand LoginTmp { get => _loginTmp; set => SetField(ref _loginTmp, value); }
         public ICommand LoginSave { get => _loginSave; set => SetField(ref _loginSave, value); }
-        public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
-        public Bitmap RefreshIcon { get => _refreshIcon; set => SetField(ref _refreshIcon, value); }
+        public ICommand LoginTmp { get => _loginTmp; set => SetField(ref _loginTmp, value); }
+        public ObservableCollection<string> QualityList { get => _qualityList; set => SetField(ref _qualityList, value); }
+        public ObservableCollection<themes> ThemeList { get => _themeList; set => SetField(ref _themeList, value); }
+        public settings appSettings { get => _appSettings; set => SetField(ref _appSettings, value); }
+        public string ErrorText { get => _errorText; set => SetField(ref _errorText, value); }
+        public string Password { get => _password; set => SetField(ref _password, value); }
+        public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
+        public string Username { get => _username; set => SetField(ref _username, value); }
+        public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
+        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         #endregion
 
         #region Companies variables
         private companies.companyData _selectedCompany;
-        private ObservableCollection<companies.companyData> _companyList;
         private ICommand _loadCompanies;
         private ICommand _loadShows;
-
+        private ObservableCollection<companies.companyData> _companyList;
+        
         public companies.companyData selectedCompany { get => _selectedCompany; set { SetField(ref _selectedCompany, value); CancelTokens(1); LoadShows.Execute(null); } }
-        public ObservableCollection<companies.companyData> CompanyList { get => _companyList; set => SetField(ref _companyList, value); }
-
         public ICommand LoadCompanies { get => _loadCompanies; set => SetField(ref _loadCompanies, value); }
         public ICommand LoadShows { get => _loadShows; set => SetField(ref _loadShows, value); }
+        public ObservableCollection<companies.companyData> CompanyList { get => _companyList; set => SetField(ref _companyList, value); }
         #endregion
 
         #region Shows variables
-        private shows.showData _selectedShow;
-        private ObservableCollection<shows.showData> _showList;
-        private string _showLoadText;
-        private CancellationTokenSource _showsTokenSource;
-        private CancellationToken _showsToken;
         private Bitmap _recentImage;
+        private CancellationToken _showsToken;
+        private CancellationTokenSource _showsTokenSource;
         private ICommand _loadSeasons;
+        private ObservableCollection<shows.showData> _showList;
+        private shows.showData _selectedShow;
+        private string _showLoadText;
 
-        public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
-        public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); CancelTokens(2); LoadSeasons.Execute(null); } }
-        public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
-        public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
-        public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
+        // Unlike the other images, if this is to a getter, it breaks the program (As it is used for to check if the recent episode selection has been made most likely)
         public Bitmap RecentImage { get => _recentImage; set => SetField(ref _recentImage, value); }
-
+        public CancellationToken ShowsToken { get => _showsToken; set => SetField(ref _showsToken, value); }
+        public CancellationTokenSource ShowsTokenSource { get => _showsTokenSource; set => SetField(ref _showsTokenSource, value); }
         public ICommand LoadSeasons { get => _loadSeasons; set => SetField(ref _loadSeasons, value); }
+        public ObservableCollection<shows.showData> ShowList { get => _showList; set => SetField(ref _showList, value); }
+        public shows.showData selectedShow { get => _selectedShow; set { SetField(ref _selectedShow, value); CancelTokens(2); LoadSeasons.Execute(null); } }
+        public string ShowLoadText { get => _showLoadText; set => SetField(ref _showLoadText, value); }
         #endregion
 
         #region Season variables
-        private CancellationTokenSource _seasonTokenSource;
         private CancellationToken _seasonToken;
+        private CancellationTokenSource _seasonTokenSource;
+        private ICommand _loadEpisodes;
         private ObservableCollection<seasons.seasonData> _seasonList;
         private seasons.seasonData _selectedSeason;
         private string _seasonLoadText;
-        private ICommand _loadEpisodes;
 
-        public CancellationTokenSource SeasonTokenSource { get => _seasonTokenSource; set => SetField(ref _seasonTokenSource, value); }
-        public CancellationToken SeasonToken { get => _seasonToken; set => SetField(ref _seasonToken, value); }
-        public ObservableCollection<seasons.seasonData> SeasonList { get => _seasonList; set => SetField(ref _seasonList, value); }
-        public string SeasonLoadText { get => _seasonLoadText; set => SetField(ref _seasonLoadText, value); }
         public bool SeasonPlaceholderText { get { return selectedSeason == null ? true : false; } }
-        public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); OnPropertyChanged("SeasonPlaceholderText"); CancelTokens(3); LoadEpisodes.Execute(null); } }
+        public CancellationToken SeasonToken { get => _seasonToken; set => SetField(ref _seasonToken, value); }
+        public CancellationTokenSource SeasonTokenSource { get => _seasonTokenSource; set => SetField(ref _seasonTokenSource, value); }
         public ICommand LoadEpisodes { get => _loadEpisodes; set => SetField(ref _loadEpisodes, value); }
+        public ObservableCollection<seasons.seasonData> SeasonList { get => _seasonList; set => SetField(ref _seasonList, value); }
+        public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); OnPropertyChanged("SeasonPlaceholderText"); CancelTokens(3); LoadEpisodes.Execute(null); } }
+        public string SeasonLoadText { get => _seasonLoadText; set => SetField(ref _seasonLoadText, value); }
         #endregion
 
         #region Episodes variables
-        private CancellationTokenSource _episodeTokenSource;
-        private CancellationToken _episodeToken;
-        private ObservableCollection<episodes.episodeData> _episodeList;
-        private episodes.episodeData _selectedEpisode;
         private bool _episodeLoadText;
-        private int _pageNumber;
-        private ObservableCollection<int> _pageList;
+        private CancellationToken _episodeToken;
+        private CancellationTokenSource _episodeTokenSource;
+        private episodes.episodeData _selectedEpisode;
         private ICommand _loadVideo;
+        private int _pageNumber;
+        private ObservableCollection<episodes.episodeData> _episodeList;
+        private ObservableCollection<int> _pageList;
 
-        public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
-        public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
-        public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
         public bool EpisodeLoadText { get => _episodeLoadText; set => SetField(ref _episodeLoadText, value); }
-        public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); CancelTokens(5); LoadVideo.Execute(null); } }
-        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodes.Execute(null); } }
-        public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
         public bool PagePlaceholderText { get { return PageNumber == 0 ? true : false; } }
-        public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
+        public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
+        public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
+        public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); CancelTokens(5); LoadVideo.Execute(null); } }
         public ICommand LoadVideo { get => _loadVideo; set => SetField(ref _loadVideo, value); }
+        public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
+        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodes.Execute(null); } }
+        public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
+        public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
         #endregion
 
         #region Video variables
-        private CancellationTokenSource _videoTokenSource;
-        private CancellationToken _videoToken;
         private bool _buttonEnable;
-        private string _buttonText;
+        private CancellationToken _videoToken;
+        private CancellationTokenSource _videoTokenSource;
         private ICommand _loadVideoPlayer;
+        private string _buttonText;
 
-        public CancellationTokenSource VideoTokenSource { get => _videoTokenSource; set => SetField(ref _videoTokenSource, value); }
-        public CancellationToken VideoToken { get => _videoToken; set => SetField(ref _videoToken, value); }
         public bool ButtonEnable { get => _buttonEnable; set => SetField(ref _buttonEnable, value); }
-        public string ButtonText { get => _buttonText; set => SetField(ref _buttonText, value); }
+        public CancellationToken VideoToken { get => _videoToken; set => SetField(ref _videoToken, value); }
+        public CancellationTokenSource VideoTokenSource { get => _videoTokenSource; set => SetField(ref _videoTokenSource, value); }
         public ICommand OpenVideo { get => _loadVideoPlayer; set => SetField(ref _loadVideoPlayer, value); }
+        public string ButtonText { get => _buttonText; set => SetField(ref _buttonText, value); }
         #endregion
 
         #region Loading from API
