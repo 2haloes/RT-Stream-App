@@ -56,7 +56,7 @@ namespace RT_Stream_App.ViewModels
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;
-            RecentImage = new Bitmap("recent.png");
+            RecentImage = new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "recent.png");
             LoadCompanies.Execute(null);
         }
         #region Global variables
@@ -73,7 +73,7 @@ namespace RT_Stream_App.ViewModels
         private string _username;
         private themes _selectedTheme;
 
-        public Bitmap RefreshIcon => new Bitmap("refresh.png");
+        public Bitmap RefreshIcon => new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "refresh.png");
         public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
         // This is passed to all methods that download (for API and video link calls). It is also able to store information which is how the Temp Login feature works
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
