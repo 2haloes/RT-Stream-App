@@ -191,6 +191,10 @@ namespace RT_Stream_App.ViewModels
                 ErrorText = "Companies failed to load, please try reloading the program: " + ex.Message;
                 return;
             }
+            finally
+            {
+                CompanyList.Insert(0, MainModel.injectListing<companies.companyData>());
+            }
         }
 
         public async Task LoadShowsAsync(CancellationToken ct)
@@ -217,7 +221,7 @@ namespace RT_Stream_App.ViewModels
             }
             // After this, thumbnails will display as they load
             ShowList = tmpShows.data;
-            ShowList.Insert(0, MainModel.insertRecent(selectedCompany.attributes.slug, RecentImage));
+            ShowList.Insert(0, MainModel.injectListing<shows.showData>(selectedCompany.attributes.slug, RecentImage));
             ShowLoadText = "Loading Thumbnails";
             tmpShows = await Task.Run(() => MainModel.loadImages(tmpShows, websiteClient, ct));
             if (ct.IsCancellationRequested)
@@ -237,7 +241,7 @@ namespace RT_Stream_App.ViewModels
             {
                 SeasonList = new ObservableCollection<seasons.seasonData>()
                 {
-                    MainModel.recentSeason(selectedShow.links.seasons)
+                    MainModel.injectListing<seasons.seasonData>(selectedShow.links.seasons)
                 };
             }
             else

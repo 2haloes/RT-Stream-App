@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
@@ -283,36 +284,57 @@ namespace RT_Stream_App.Models
             return toReturn;
         }
 
-        public static shows.showData insertRecent(string companyString, Bitmap recentImage)
+        public static TOut injectListing<TOut>([Optional, DefaultParameterValue("")]string linkData, [Optional, DefaultParameterValue(null)]Bitmap recentImage)
         {
-            return new shows.showData()
+            if (typeof(TOut) == typeof(companies.companyData))
             {
-                attributes = new shows.attributeData()
+                return (TOut)(object)new companies.companyData
                 {
-                    title = "Recent episodes",
-                    is_sponsors_only = false
-                },
-                links = new shows.linkData()
-                {
-                    seasons = "/api/v1/channels/" + companyString + "/episodes?page=1"
-                },
-                thumbImage = recentImage
-            };
-        }
-
-        public static seasons.seasonData recentSeason(string linkString)
-        {
-            return new seasons.seasonData()
+                    attributes = new companies.attributeData
+                    {
+                        name = "All",
+                        slug = "all"
+                    },
+                    links = new companies.linkData
+                    {
+                        shows = "/api/v1/shows/"
+                    }
+                };
+            }
+            else if (typeof(TOut) == typeof(shows.showData))
             {
-                attributes = new seasons.attributeData()
+                return (TOut)(object)new shows.showData()
                 {
-                    title = "Recent Episodes"
-                },
-                links = new seasons.linkData()
+                    attributes = new shows.attributeData()
+                    {
+                        title = "Recent episodes",
+                        is_sponsors_only = false
+                    },
+                    links = new shows.linkData()
+                    {
+                        seasons = linkData == "all" ? "/api/v1/episodes?page=1" : "/api/v1/channels/" + linkData + "/episodes?page=1"
+                    },
+                    thumbImage = recentImage
+                };
+            }
+            else if (typeof(TOut) == typeof(seasons.seasonData))
+            {
+                return (TOut)(object)new seasons.seasonData()
                 {
-                    episodes = linkString
-                }
-            };
+                    attributes = new seasons.attributeData()
+                    {
+                        title = "Recent Episodes"
+                    },
+                    links = new seasons.linkData()
+                    {
+                        episodes = linkData
+                    }
+                };
+            }
+            else
+            {
+                return default(TOut);
+            }
         }
 
         public static List<string> extractQuality(List<string> fileContent, int qualityToken)
