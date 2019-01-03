@@ -117,17 +117,22 @@
         <ListBox Grid.Row="1" Grid.Column="2" Items="{Binding EpisodeList}" SelectedItem="{Binding selectedEpisode}" HorizontalAlignment="Stretch" Margin="20,30,20,0" VerticalAlignment="Stretch">
           <ListBox.ItemTemplate>
             <DataTemplate>
-              <Grid Height="64">
+              <Grid Height="72">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto"></ColumnDefinition>
                   <ColumnDefinition Width="Auto"></ColumnDefinition>
-                  <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="{Binding Image}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
-                <TextBlock Grid.Column="1" Foreground="Gold" Text="(First)" IsVisible="{Binding attributes.is_sponsors_only}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                <TextBlock Grid.Column="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding sponsorTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                <TextBlock Grid.Column="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding memberTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                <TextBlock Grid.Column="2" Text="{Binding attributes.title}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Image Grid.Column="0" Grid.RowSpan="3" Source="{Binding Image}" Height="64" Width="64" Stretch="Uniform" HorizontalAlignment="Left"></Image>
+                <TextBlock Grid.Column="1" Grid.Row="1" Foreground="Gold" Text="(First)" IsVisible="{Binding attributes.is_sponsors_only}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Foreground="Goldenrod" Text="(First Timed)" IsVisible="{Binding sponsorTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Foreground="DarkGoldenrod" Text="(Members Timed)" IsVisible="{Binding memberTimed}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,5,0,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding attributes.title}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,10,0,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding seriesDisplay}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="10"  Margin="5,0,0,0"/>
               </Grid>
             </DataTemplate>
           </ListBox.ItemTemplate>

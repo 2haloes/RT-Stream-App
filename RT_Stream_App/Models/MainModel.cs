@@ -187,6 +187,35 @@ namespace RT_Stream_App.Models
                         }
                     }
                 }
+                string tmpChar = toReturn.data[i].attributes.channel_slug[0].ToString();
+                string tmpShowName = toReturn.data[i].attributes.show_slug;
+                toReturn.data[i].seriesDisplay = toReturn.data[i].attributes.channel_slug;
+                toReturn.data[i].seriesDisplay = toReturn.data[i].seriesDisplay.Remove(0, 1).Insert(0, tmpChar.ToUpper());
+                tmpChar = tmpShowName[0].ToString();
+                tmpShowName = tmpShowName.Remove(0, 1).Insert(0, tmpChar.ToUpper());
+                for (int channel_i = 0; channel_i < toReturn.data[i].seriesDisplay.Length; channel_i++)
+                {
+                    if (toReturn.data[i].seriesDisplay[channel_i] == '-')
+                    {
+                        tmpChar = toReturn.data[i].seriesDisplay[channel_i + 1].ToString();
+                        toReturn.data[i].seriesDisplay = toReturn.data[i].seriesDisplay.Remove(channel_i, 2).Insert(channel_i, " " + tmpChar.ToUpper());
+                    }
+                }
+                
+                for (int show_i = 0; show_i < tmpShowName.Length; show_i++)
+                {
+                    if (tmpShowName[show_i] == '-' && tmpShowName[show_i - 1] == 't' && tmpShowName[show_i + 1] == 's')
+                    {
+                        tmpShowName = tmpShowName.Remove(show_i, 1).Insert(show_i, "'");
+                    }
+                    else if (tmpShowName[show_i] == '-')
+                    {
+                        tmpChar = tmpShowName[show_i + 1].ToString();
+                        tmpShowName = tmpShowName.Remove(show_i, 2).Insert(show_i, " " + tmpChar.ToUpper());
+                    }
+                }
+
+                toReturn.data[i].seriesDisplay += " - " + tmpShowName;
             }
             return toReturn;
         }

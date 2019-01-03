@@ -45,6 +45,7 @@ namespace RT_Stream_App.Classes
             private attributeData _attributes;
             private includedData _included;
             private IBitmap _image;
+            private string _seriesDisplay;
             private bool _sponsorTimed;
             private bool _memberTimed;
 
@@ -74,6 +75,11 @@ namespace RT_Stream_App.Classes
                 get => _image;
                 set => SetField(ref _image, value);
             }
+            public string seriesDisplay
+            {
+                get => _seriesDisplay;
+                set => SetField(ref _seriesDisplay, value);
+            }
             public string lengthTimeDisplay
             {
                 get => TimeSpan.FromSeconds(attributes.length).ToString("c");
@@ -102,6 +108,8 @@ namespace RT_Stream_App.Classes
             private DateTime _public_golive_at;
             private DateTime _sponsor_golive_at;
             private DateTime _member_golive_at;
+            private string _channel_slug;
+            private string _show_slug;
             private int _length;
 
             public string title
@@ -144,6 +152,18 @@ namespace RT_Stream_App.Classes
             {
                 get => _member_golive_at;
                 set => SetField(ref _member_golive_at, value);
+            }
+
+            public string channel_slug
+            {
+                get => _channel_slug;
+                set => SetField(ref _channel_slug, value);
+            }
+
+            public string show_slug
+            {
+                get => _show_slug;
+                set => SetField(ref _show_slug, value);
             }
 
             public int length {
