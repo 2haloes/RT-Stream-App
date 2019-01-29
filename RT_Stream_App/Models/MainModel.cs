@@ -367,9 +367,35 @@ namespace RT_Stream_App.Models
 
         public static List<string> extractQuality(List<string> fileContent, int qualityToken)
         {
-            //string[] tmpString;
+            List<string> compList = new List<string>();
+            for (int i = 0; i < fileContent.Count; i++)
+            {
+                if (!String.IsNullOrWhiteSpace(fileContent[i]))
+                {
+                    if (fileContent[i].Substring(0, 1) == "#")
+                    {
+                        compList.Add(fileContent[i]);
+                    }
+                }
+
+            }
             // NOTE: I actually have no idea if the 4k is correct. It's borderline impossible to find a video with 4K
-            if (fileContent.Any(qualityList[qualityToken].Contains) || fileContent.Any("238".Contains))
+            if (compList.Any(item => item.Contains(qualityList[qualityToken])))
+            {
+                for (int i = 0; i < fileContent.Count; i++)
+                {
+                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ","))
+                    {
+                        continue;
+                    }
+                    else if (fileContent[i].Contains("-STREAM-INF"))
+                    {
+                        fileContent.RemoveRange(i, 2);
+                        i--;
+                    }
+                }
+            }
+            else if (qualityToken == 0 && compList.Any(item => item.Contains("238")))
             {
                 for (int i = 0; i < fileContent.Count; i++)
                 {
@@ -384,7 +410,7 @@ namespace RT_Stream_App.Models
                     }
                 }
             }
-            else if (qualityToken == 0)
+            else if (qualityToken == 0 && !compList.Any(item => item.Contains("238")))
             {
                 return fileContent;
             }
