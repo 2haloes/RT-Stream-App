@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace RT_Stream_App.Models
@@ -23,7 +24,7 @@ namespace RT_Stream_App.Models
         public const string loginURL = "https://auth.roosterteeth.com/oauth/token";
         public static readonly string settingFile = (AppDomain.CurrentDomain.BaseDirectory + "settings.json");
         public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
-        
+
         /// <summary>
         /// Loads the settings (Or creates the settings file on first load)
         /// </summary>
@@ -99,7 +100,7 @@ namespace RT_Stream_App.Models
             }
         }
 
-        
+
         public static void SaveTheme(settings currentSettings)
         {
             settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
@@ -200,7 +201,7 @@ namespace RT_Stream_App.Models
                         toReturn.data[i].seriesDisplay = toReturn.data[i].seriesDisplay.Remove(channel_i, 2).Insert(channel_i, " " + tmpChar.ToUpper());
                     }
                 }
-                
+
                 for (int show_i = 0; show_i < tmpShowName.Length; show_i++)
                 {
                     if (tmpShowName[show_i] == '-' && tmpShowName[show_i - 1] == 't' && tmpShowName[show_i + 1] == 's')
@@ -241,6 +242,11 @@ namespace RT_Stream_App.Models
             }
 
             fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+            if (fileToOpen.Count < 3)
+            {
+                // This splits at # but keeps the char instead of removing it
+                fileToOpen = Regex.Split(response.Content.ReadAsStringAsync().Result, @"?<=[#]").ToList();
+            }
             fileToOpen = extractQuality(fileToOpen, selectedQuality);
             for (int i = 0; i < fileToOpen.Count; i++)
             {
