@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace RT_Stream_App.Models
@@ -23,7 +24,7 @@ namespace RT_Stream_App.Models
         public const string loginURL = "https://auth.roosterteeth.com/oauth/token";
         public static readonly string settingFile = (AppDomain.CurrentDomain.BaseDirectory + "settings.json");
         public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
-        
+
         /// <summary>
         /// Loads the settings (Or creates the settings file on first load)
         /// </summary>
@@ -99,7 +100,7 @@ namespace RT_Stream_App.Models
             }
         }
 
-        
+
         public static void SaveTheme(settings currentSettings)
         {
             settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
@@ -200,7 +201,7 @@ namespace RT_Stream_App.Models
                         toReturn.data[i].seriesDisplay = toReturn.data[i].seriesDisplay.Remove(channel_i, 2).Insert(channel_i, " " + tmpChar.ToUpper());
                     }
                 }
-                
+
                 for (int show_i = 0; show_i < tmpShowName.Length; show_i++)
                 {
                     if (tmpShowName[show_i] == '-' && tmpShowName[show_i - 1] == 't' && tmpShowName[show_i + 1] == 's')
@@ -241,6 +242,11 @@ namespace RT_Stream_App.Models
             }
 
             fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
+            if (fileToOpen.Count < 3)
+            {
+                // This splits at # but keeps the char instead of removing it
+                fileToOpen = Regex.Split(response.Content.ReadAsStringAsync().Result, @"?<=[#]").ToList();
+            }
             fileToOpen = extractQuality(fileToOpen, selectedQuality);
             for (int i = 0; i < fileToOpen.Count; i++)
             {
@@ -367,9 +373,35 @@ namespace RT_Stream_App.Models
 
         public static List<string> extractQuality(List<string> fileContent, int qualityToken)
         {
-            //string[] tmpString;
+            List<string> compList = new List<string>();
+            for (int i = 0; i < fileContent.Count; i++)
+            {
+                if (!String.IsNullOrWhiteSpace(fileContent[i]))
+                {
+                    if (fileContent[i].Substring(0, 1) == "#")
+                    {
+                        compList.Add(fileContent[i]);
+                    }
+                }
+
+            }
             // NOTE: I actually have no idea if the 4k is correct. It's borderline impossible to find a video with 4K
-            if (fileContent.Any(qualityList[qualityToken].Contains) || fileContent.Any("238".Contains))
+            if (compList.Any(item => item.Contains(qualityList[qualityToken])))
+            {
+                for (int i = 0; i < fileContent.Count; i++)
+                {
+                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ","))
+                    {
+                        continue;
+                    }
+                    else if (fileContent[i].Contains("-STREAM-INF"))
+                    {
+                        fileContent.RemoveRange(i, 2);
+                        i--;
+                    }
+                }
+            }
+            else if (qualityToken == 0 && compList.Any(item => item.Contains("238")))
             {
                 for (int i = 0; i < fileContent.Count; i++)
                 {
@@ -384,7 +416,7 @@ namespace RT_Stream_App.Models
                     }
                 }
             }
-            else if (qualityToken == 0)
+            else if (qualityToken == 0 && !compList.Any(item => item.Contains("238")))
             {
                 return fileContent;
             }
