@@ -98,14 +98,6 @@ namespace RT_Stream_App.Models
             }
         }
 
-        public static void aesKeyLoad()
-        {
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"))
-            {
-                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json", EncryptProvider.CreateAesKey().Key);
-            }
-        }
-
         /// <summary>
         /// Saves the amount of episodes to load per page when the value is changed
         /// </summary>
