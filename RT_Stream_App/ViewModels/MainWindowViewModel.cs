@@ -52,7 +52,6 @@ namespace RT_Stream_App.ViewModels
             VideoToken = VideoTokenSource.Token;
             LoadVideo = new DelegateCommand(() => LoadVideoAsync());
             OpenVideo = new DelegateCommand(async () => await LoadVideoPlayerAsync(VideoToken));
-            MainModel.aesKeyLoad();
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;

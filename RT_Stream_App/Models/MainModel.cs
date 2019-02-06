@@ -31,6 +31,26 @@ namespace RT_Stream_App.Models
         /// <returns></returns>
         public static settings SettingsLoad()
         {
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"))
+            {
+                // Only for next release to transition from the old method to the new one
+                if (File.Exists(settingFile))
+                {
+                    settings newSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
+                    if (!String.IsNullOrWhiteSpace(newSettings.username) || !String.IsNullOrWhiteSpace(newSettings.password))
+                    {
+                        string username = EncryptProvider.AESDecrypt(newSettings.username, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+                        string password = EncryptProvider.AESDecrypt(newSettings.password, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+                        newSettings.username = encryptDetails(newSettings.username);
+                        newSettings.password = encryptDetails(newSettings.password);
+                        File.WriteAllText(settingFile, JsonConvert.SerializeObject(newSettings));
+                    }
+                }
+                
+                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json");
+                
+            }
+
             if (File.Exists(settingFile))
             {
                 return JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
@@ -75,14 +95,6 @@ namespace RT_Stream_App.Models
                 toReturn.Add(new themes("white", "black", "dodgerblue", "SA Dark"));
                 File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "themes.json", JsonConvert.SerializeObject(toReturn));
                 return toReturn;
-            }
-        }
-
-        public static void aesKeyLoad()
-        {
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"))
-            {
-                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json", EncryptProvider.CreateAesKey().Key);
             }
         }
 
@@ -435,7 +447,7 @@ namespace RT_Stream_App.Models
             }
             else
             {
-                return EncryptProvider.AESEncrypt(detail, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+                return EncryptProvider.AESEncrypt(detail, getAESKey());
             }
         }
 
@@ -447,8 +459,20 @@ namespace RT_Stream_App.Models
             }
             else
             {
-                return EncryptProvider.AESDecrypt(detail, File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "RT_Stream_App.applicationcfg.json"));
+                return EncryptProvider.AESDecrypt(detail, getAESKey());
             }
+        }
+
+        /// <summary>
+        /// Generates a key based on the computer name and user without storing the key on disk
+        /// </summary>
+        /// <returns></returns>
+        public static string getAESKey()
+        {
+            string keyString = "";
+            keyString += Environment.GetEnvironmentVariable("COMPUTERNAME") ?? Environment.GetEnvironmentVariable("HOSTNAME");
+            keyString += Environment.UserName;
+            return EncryptProvider.Sha256(keyString).Substring(0,32);
         }
 
         /// <summary>
