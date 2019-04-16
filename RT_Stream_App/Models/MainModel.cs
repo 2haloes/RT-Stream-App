@@ -300,7 +300,11 @@ namespace RT_Stream_App.Models
             episodes.APIData toReturn = episodeList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
-                toReturn.data[i].Image = downloadedBitmap(toReturn.data[i].included.images[0].attributes.medium, websiteClient);
+                var logoImage = toReturn.data[i].included.images.FirstOrDefault(img => img.attributes.image_type == "profile");
+                if (logoImage != null)
+                {
+                    toReturn.data[i].Image = downloadedBitmap(logoImage.attributes.medium, websiteClient);
+                }
                 if (ct.IsCancellationRequested)
                 {
                     return null;
