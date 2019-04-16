@@ -231,6 +231,7 @@ namespace RT_Stream_App.Classes
             private string _thumb;
             private string _small;
             private string _medium;
+            private string _image_type;
 
             public string thumb
             {
@@ -248,6 +249,12 @@ namespace RT_Stream_App.Classes
             {
                 get => _medium;
                 set => SetField(ref _medium, value);
+            }
+
+            public string image_type
+            {
+                get => _image_type;
+                set => SetField(ref _image_type, value);
             }
 
         }

@@ -144,11 +144,18 @@ namespace RT_Stream_App.Classes
         public class imageAttributes : CallChanged
         {
             private string _thumb;
+            private string _image_type;
 
             public string thumb
             {
                 get => _thumb;
                 set => SetField(ref _thumb, value);
+            }
+
+            public string image_type
+            {
+                get => _image_type;
+                set => SetField(ref _image_type, value);
             }
 
         }

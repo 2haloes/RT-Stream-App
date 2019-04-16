@@ -282,13 +282,10 @@ namespace RT_Stream_App.Models
             shows.APIData toReturn = showList;
             for (int i = 1; i < toReturn.data.Count; i++)
             {
-                if (toReturn.data[i].included.images.Count < 6)
+                var logoImage = toReturn.data[i].included.images.FirstOrDefault(img => img.attributes.image_type == "profile");
+                if (logoImage != null)
                 {
-                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[3].attributes.thumb, websiteClient);
-                }
-                else
-                {
-                    toReturn.data[i].thumbImage = downloadedBitmap(toReturn.data[i].included.images[5].attributes.thumb, websiteClient);
+                    toReturn.data[i].thumbImage = downloadedBitmap(logoImage.attributes.thumb, websiteClient);
                 }
                 if (ct.IsCancellationRequested)
                 {
@@ -303,7 +300,11 @@ namespace RT_Stream_App.Models
             episodes.APIData toReturn = episodeList;
             for (int i = 0; i < toReturn.data.Count; i++)
             {
-                toReturn.data[i].Image = downloadedBitmap(toReturn.data[i].included.images[0].attributes.medium, websiteClient);
+                var logoImage = toReturn.data[i].included.images.FirstOrDefault(img => img.attributes.image_type == "profile");
+                if (logoImage != null)
+                {
+                    toReturn.data[i].Image = downloadedBitmap(logoImage.attributes.medium, websiteClient);
+                }
                 if (ct.IsCancellationRequested)
                 {
                     return null;
