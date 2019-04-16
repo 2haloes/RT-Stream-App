@@ -1,6 +1,8 @@
 # RT-Stream-App
 A crossplatform program to play Rooster Teeth videos on low power devices
 
+![Image of the RT stream app](https://sites.2haloes.co.uk/images/rt_stream_app.PNG)
+
 ## Minimum requirements 
 OS: Windows, OSX, Linux (no dotnet core required) or any OS that can install dotnet core
 
