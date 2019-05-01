@@ -342,6 +342,7 @@ namespace RT_Stream_App.ViewModels
         /// <returns></returns>
         public async Task LoadVideoPlayerAsync(CancellationToken ct)
         {
+            ErrorText = "";
             if (selectedEpisode == null)
             {
                 return;
@@ -391,24 +392,52 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            // This checks the OS as each OS has a different method of opening with the default program
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            // If set to true, this will use the supplied player, if not, it will use the deafult player
+            if (appSettings.usePlayer)
             {
-                ProcessStartInfo psi = new ProcessStartInfo
+                // Checks if the player is where expected, if not, it reports the error
+                if (!System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player"))
                 {
-                    FileName = AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8",
-                    UseShellExecute = true
-                };
-                await Task.Run(() => Process.Start(psi));
+                    ErrorText = "RT Player moved or deleted, please either place it back or disable the option";
+                    ButtonText = "Play Video";
+                    return;
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.exe",
+                        UseShellExecute = true
+                    };
+                    await Task.Run(() => Process.Start(psi));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
+                    await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player"));
+                }
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else
             {
-                await Task.Run(() => Process.Start("open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
-                await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                // This checks the OS as each OS has a different method of opening with the default program
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8",
+                        UseShellExecute = true
+                    };
+                    await Task.Run(() => Process.Start(psi));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    await Task.Run(() => Process.Start("open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
+                    await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                }
             }
         }
         #endregion
