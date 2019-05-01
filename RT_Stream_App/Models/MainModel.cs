@@ -135,6 +135,13 @@ namespace RT_Stream_App.Models
             File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
         }
 
+        public static void SavePlayerUse(settings currentSettings)
+        {
+            settings oldSettings = JsonConvert.DeserializeObject<settings>(File.ReadAllText(settingFile));
+            oldSettings.usePlayer = currentSettings.usePlayer;
+            File.WriteAllText(settingFile, JsonConvert.SerializeObject(oldSettings));
+        }
+
         public static TOut loadAPI<TOut>(string refLink, HttpClient websiteClient, settings settingsVars)
         {
             HttpResponseMessage response = websiteClient.GetAsync(siteURL + refLink).Result;
@@ -263,11 +270,22 @@ namespace RT_Stream_App.Models
             for (int i = 0; i < fileToOpen.Count; i++)
             {
                 // This has somehow been the worst part of the program as of themes being completed, if I have to change this again, I may have to change my approch
+                // One video changed how videos are laid out so now I'm adding more to this as it's different
                 // hls are for newer videos, p.m3u8 is for older videos such as season 1 of Million Dollars But
                 if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS") || fileToOpen[i].Contains("P.m3u8") || fileToOpen[i].Contains("p.m3u8"))
                 {
+                    // This is done like this because the playlist file URL is located on it's own line
                     fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];
                 }
+
+                // This should cover audio tracks and I-frames (If anyone cares about I-frames in this case)
+                if (fileToOpen[i].Contains("URI="))
+                {
+                    int addIndex = fileToOpen[i].IndexOf("URI=") + 5;
+                    // This is done like this because the audio/I-frame files are located in the middle of strings, thankfully a lot less indexes than the last version of this program
+                    fileToOpen[i] = fileToOpen[i].Insert(addIndex, toReturn.data[0].attributes.cutUrl + "/");
+                }
+
             }
             if (ct.IsCancellationRequested)
             {

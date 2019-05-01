@@ -1,4 +1,7 @@
-﻿namespace RT_Stream_App.Classes
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
+
+namespace RT_Stream_App.Classes
 {
     public class settings : CallChanged
     {
@@ -7,6 +10,7 @@
         private string _password;
         private int _theme;
         private int _quality;
+        private bool _usePlayer;
 
         public int page_length
         {
@@ -33,6 +37,13 @@
         {
             get => _quality;
             set => SetField(ref _quality, value);
+        }
+
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public bool usePlayer {
+            get => _usePlayer;
+            set => SetField(ref _usePlayer, value);
         }
     }
 }

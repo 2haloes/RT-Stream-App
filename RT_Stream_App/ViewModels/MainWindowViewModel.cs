@@ -32,7 +32,12 @@ namespace RT_Stream_App.ViewModels
             selectedQuality = QualityList[appSettings.quality];
             Username = MainModel.decryptDetails(appSettings.username);
             Password = MainModel.decryptDetails(appSettings.password);
+            // Don't display the setting if there isn't a player included
+            UsePlayerDisplay = System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player") && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? true : false;
+            // If the option isn't displayed then it should be false
+            UsePlayer = UsePlayerDisplay ? appSettings.usePlayer : false;
             websiteClient = new HttpClient();
+            // This is used as the CDN rejected requests without a user agent 
             websiteClient.DefaultRequestHeaders.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             LoadCompanies = new DelegateCommand(async () => await LoadCompaniesAsync());
             ShowLoadText = "Shows";
@@ -70,6 +75,8 @@ namespace RT_Stream_App.ViewModels
         private string _password;
         private string _selectedQuality;
         private string _username;
+        private bool _usePlayerDisplay;
+        private bool _usePlayer;
         private themes _selectedTheme;
 
         public Bitmap RefreshIcon => new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "refresh.png");
@@ -85,6 +92,8 @@ namespace RT_Stream_App.ViewModels
         public string Password { get => _password; set => SetField(ref _password, value); }
         public string selectedQuality { get => _selectedQuality; set { SetField(ref _selectedQuality, value); appSettings.quality = QualityList.IndexOf(_selectedQuality); MainModel.SaveQuality(appSettings); } }
         public string Username { get => _username; set => SetField(ref _username, value); }
+        public bool UsePlayerDisplay { get => _usePlayerDisplay; set => SetField(ref _usePlayerDisplay, value); }
+        public bool UsePlayer { get => _usePlayer; set { SetField(ref _usePlayer, value); appSettings.usePlayer = _usePlayer; MainModel.SavePlayerUse(appSettings); } }
         public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
         public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
         #endregion
@@ -333,6 +342,7 @@ namespace RT_Stream_App.ViewModels
         /// <returns></returns>
         public async Task LoadVideoPlayerAsync(CancellationToken ct)
         {
+            ErrorText = "";
             if (selectedEpisode == null)
             {
                 return;
@@ -382,24 +392,52 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            // This checks the OS as each OS has a different method of opening with the default program
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            // If set to true, this will use the supplied player, if not, it will use the deafult player
+            if (appSettings.usePlayer)
             {
-                ProcessStartInfo psi = new ProcessStartInfo
+                // Checks if the player is where expected, if not, it reports the error
+                if (!System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player"))
                 {
-                    FileName = AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8",
-                    UseShellExecute = true
-                };
-                await Task.Run(() => Process.Start(psi));
+                    ErrorText = "RT Player moved or deleted, please either place it back or disable the option";
+                    ButtonText = "Play Video";
+                    return;
+                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.exe",
+                        UseShellExecute = true
+                    };
+                    await Task.Run(() => Process.Start(psi));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
+                    await Task.Run(() => Process.Start(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player"));
+                }
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else
             {
-                await Task.Run(() => Process.Start("open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
-                await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                // This checks the OS as each OS has a different method of opening with the default program
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8",
+                        UseShellExecute = true
+                    };
+                    await Task.Run(() => Process.Start(psi));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    await Task.Run(() => Process.Start("open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
+                    await Task.Run(() => Process.Start("xdg-open", AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8"));
+                }
             }
         }
         #endregion
