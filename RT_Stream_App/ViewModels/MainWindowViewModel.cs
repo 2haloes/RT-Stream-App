@@ -33,7 +33,7 @@ namespace RT_Stream_App.ViewModels
             Username = MainModel.decryptDetails(appSettings.username);
             Password = MainModel.decryptDetails(appSettings.password);
             // Don't display the setting if there isn't a player included
-            UsePlayerDisplay = System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player") ? true : false;
+            UsePlayerDisplay = System.IO.Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player") && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? true : false;
             // If the option isn't displayed then it should be false
             UsePlayer = UsePlayerDisplay ? appSettings.usePlayer : false;
             websiteClient = new HttpClient();
