@@ -30,6 +30,10 @@ I am a very big fan of Rooster Teeth, however, my laptop just isn't powerful eno
 
 From that start, I have created, improved and built upon the idea of a program that makes it easier to view Rooster Teeth's content, making it one of my main developed programs.
 
+# Having issues?
+
+Please go to the [issues and fixes](https://github.com/2haloes/RT-Stream-App/wiki/Issues-and-fixes) wiki page before reporting an issue as there may be a known solution
+
 
 # Credits
 * JSON.NET for JSON handling
