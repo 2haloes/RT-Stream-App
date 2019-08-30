@@ -1,6 +1,7 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:RT_Stream_App.ViewModels;assembly=RT_Stream_App"
+        x:Class="RT_Stream_App.Views.MainWindow"
         Icon="{Binding ProgramIcon}"
         Title="RT Stream App"
         MinHeight="480"
@@ -19,10 +20,13 @@
       <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
       <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol, FallbackValue=White}" />
     </Style>
-    <Style Selector="DropDown">
+    <Style Selector="ComboBox">
       <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
     </Style>
     <Style Selector="StackPanel">
+      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
+    </Style>
+    <Style Selector="VirtualizingStackPanel">
       <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="TextBox">
@@ -90,7 +94,7 @@
       </ListBox>
       
       <TextBlock Grid.Row="0" Grid.Column="2" Text="Seasons/Episodes" IsVisible="{Binding SeasonPlaceholderText}" Margin="20,0,57,0" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-      <DropDown Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,57,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></DropDown>
+      <ComboBox Grid.Row="0" Grid.Column="2" Name="SeasonSelect" Height="28" Items="{Binding SeasonList}" SelectedItem="{Binding selectedSeason}" Margin="20,0,57,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"></ComboBox>
       <Button Grid.Row="0" Grid.Column="2" Command="{Binding LoadSeasons}" Classes="Refresh" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,20,0" Width="28" Height="28">
         <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
       </Button>
@@ -106,7 +110,7 @@
             </Grid.ColumnDefinitions>
           <TextBlock Grid.Column="0" Text="{Binding SeasonLoadText}"  Margin="20,0,20,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
           <TextBlock Grid.Column="1" Text="Page" IsVisible="{Binding PagePlaceholderText}"  Margin="0,5,0,0" HorizontalAlignment="Center"></TextBlock>
-          <DropDown Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></DropDown>
+          <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></ComboBox>
           <Button Grid.Column="0" Command="{Binding LoadEpisodes}" Classes="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,0,5,0" Width="28" Height="28">
             <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
           </Button>
@@ -181,10 +185,10 @@
         <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding PageCountNumber}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
 
         <TextBlock Grid.Column="0" Grid.Row="1" Margin="20" Text="Theme:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
-        <DropDown Items="{Binding ThemeList}" SelectedItem="{Binding selectedTheme}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch"></DropDown>
+        <ComboBox Items="{Binding ThemeList}" SelectedItem="{Binding selectedTheme}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch"></ComboBox>
 
         <TextBlock Grid.Column="0" Grid.Row="2" Margin="20" Text="Max quality:" HorizontalAlignment="Stretch" VerticalAlignment="Top" ></TextBlock>
-        <DropDown Items="{Binding QualityList}" SelectedItem="{Binding selectedQuality}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch"></DropDown>
+        <ComboBox Items="{Binding QualityList}" SelectedItem="{Binding selectedQuality}"  Margin="20,40,0,0" Height="30" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch"></ComboBox>
 
         <TextBlock Grid.Column="1" Grid.Row="0" Margin="20" Text="Username:" HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" ></TextBlock>
         <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Username}" Margin="20,40,0,0" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Top"></TextBox>
