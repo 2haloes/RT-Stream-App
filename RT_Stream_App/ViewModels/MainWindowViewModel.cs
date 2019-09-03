@@ -414,7 +414,7 @@ namespace RT_Stream_App.ViewModels
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
                     // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
-                    await Task.Run(() => Process.Start(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player"));
+                    await Task.Run(() => Process.Start(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.AppImage"));
                 }
             }
             else
