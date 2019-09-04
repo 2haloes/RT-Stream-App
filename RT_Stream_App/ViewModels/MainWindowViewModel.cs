@@ -407,14 +407,20 @@ namespace RT_Stream_App.ViewModels
                     ProcessStartInfo psi = new ProcessStartInfo
                     {
                         FileName = AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.exe",
+                        Arguments = "\"" + AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8 \"",
                         UseShellExecute = true
                     };
                     await Task.Run(() => Process.Start(psi));
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.AppImage",
+                        Arguments = "\"" + AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8\""
+                    };
                     // Currently bugged when publishing from Visual Studio, use the dotnet publish command instead
-                    await Task.Run(() => Process.Start(AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player"));
+                    await Task.Run(() => Process.Start(psi));
                 }
             }
             else
