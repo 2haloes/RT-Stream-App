@@ -407,7 +407,7 @@ namespace RT_Stream_App.ViewModels
                     ProcessStartInfo psi = new ProcessStartInfo
                     {
                         FileName = AppDomain.CurrentDomain.BaseDirectory + "rt-stream-player/rt-stream-player.exe",
-                        Arguments = "\"" + AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8 \"",
+                        Arguments = String.Format("\"{0}\\VideoLink.m3u8\"", AppDomain.CurrentDomain.BaseDirectory),
                         UseShellExecute = true
                     };
                     await Task.Run(() => Process.Start(psi));
