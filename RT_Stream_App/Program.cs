@@ -16,7 +16,6 @@ namespace RT_Stream_App
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .UseReactiveUI()
                 .LogToDebug();
     }
 }
