@@ -17,17 +17,14 @@
       <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="Window">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
-      <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol, FallbackValue=White}" />
+        <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
+        <Setter Property="Background" Value="{Binding selectedTheme.backgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="ComboBox">
-      <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
-    </Style>
-    <Style Selector="StackPanel">
-      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
+        <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
     </Style>
     <Style Selector="VirtualizingStackPanel">
-      <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
+        <Setter Property="Background" Value="{Binding selectedTheme.stackBackgroundCol, FallbackValue=White}" />
     </Style>
     <Style Selector="TextBox">
       <Setter Property="Foreground" Value="{Binding selectedTheme.foregroundCol, FallbackValue=Black}" />
@@ -65,9 +62,9 @@
       <ListBox Grid.Row="1" Grid.Column="0" Items="{Binding CompanyList}" SelectedItem="{Binding selectedCompany}" Margin="20,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel>
+            <Grid>
               <TextBlock Text="{Binding attributes.name}" TextAlignment="Center" />
-            </StackPanel>
+            </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
