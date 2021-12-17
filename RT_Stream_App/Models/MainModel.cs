@@ -247,7 +247,7 @@ namespace RT_Stream_App.Models
             {
                 return null;
             }
-            List<string> fileToOpen;
+            List<string> streamFile, fileToOpen;
             HttpResponseMessage response = websiteClient.GetAsync(toReturn.data[0].attributes.url).Result;
 
             try
@@ -260,38 +260,17 @@ namespace RT_Stream_App.Models
                 throw;
             }
 
-            fileToOpen = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
-            if (fileToOpen.Count < 3)
-            {
-                // This splits at # but keeps the char instead of removing it
-                fileToOpen = Regex.Split(response.Content.ReadAsStringAsync().Result, @"?<=[#]").ToList();
-            }
-            fileToOpen = extractQuality(fileToOpen, selectedQuality);
-            for (int i = 0; i < fileToOpen.Count; i++)
-            {
-                // This has somehow been the worst part of the program as of themes being completed, if I have to change this again, I may have to change my approch
-                // One video changed how videos are laid out so now I'm adding more to this as it's different
-                // hls are for newer videos, p.m3u8 is for older videos such as season 1 of Million Dollars But
-                if (fileToOpen[i].Contains("hls") || fileToOpen[i].Contains("HLS") || fileToOpen[i].Contains("P.m3u8") || fileToOpen[i].Contains("p.m3u8"))
-                {
-                    // This is done like this because the playlist file URL is located on it's own line
-                    fileToOpen[i] = toReturn.data[0].attributes.cutUrl + "/" + fileToOpen[i];
-                }
+            streamFile = response.Content.ReadAsStringAsync().Result.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();
 
-                // This should cover audio tracks and I-frames (If anyone cares about I-frames in this case)
-                if (fileToOpen[i].Contains("URI="))
-                {
-                    int addIndex = fileToOpen[i].IndexOf("URI=") + 5;
-                    // This is done like this because the audio/I-frame files are located in the middle of strings, thankfully a lot less indexes than the last version of this program
-                    fileToOpen[i] = fileToOpen[i].Insert(addIndex, toReturn.data[0].attributes.cutUrl + "/");
-                }
-
-            }
+            fileToOpen = new List<string>();
+            fileToOpen.Add(streamFile[0]);
+            fileToOpen.Add(streamFile[1]);
+            fileToOpen.AddRange(extractQuality(streamFile, selectedQuality));
             if (ct.IsCancellationRequested)
             {
                 return null;
             }
-            File.WriteAllLines(AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8", fileToOpen);
+            File.WriteAllLines(AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8", streamFile);
             return toReturn;
         }
 
@@ -405,30 +384,22 @@ namespace RT_Stream_App.Models
         public static List<string> extractQuality(List<string> fileContent, int qualityToken)
         {
             List<string> compList = new List<string>();
-            for (int i = 0; i < fileContent.Count; i++)
-            {
-                if (!String.IsNullOrWhiteSpace(fileContent[i]))
-                {
-                    if (fileContent[i].Substring(0, 1) == "#")
-                    {
-                        compList.Add(fileContent[i]);
-                    }
-                }
 
-            }
             // NOTE: I actually have no idea if the 4k is correct. It's borderline impossible to find a video with 4K
             if (compList.Any(item => item.Contains(qualityList[qualityToken])))
             {
                 for (int i = 0; i < fileContent.Count; i++)
                 {
-                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ","))
+                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ",") || fileContent[i].Contains("MEDIA:TYPE=AUDIO"))
                     {
-                        continue;
-                    }
-                    else if (fileContent[i].Contains("-STREAM-INF"))
-                    {
-                        fileContent.RemoveRange(i, 2);
-                        i--;
+                        compList.Add(fileContent[i]);
+
+                        if (fileContent[i].Contains("-STREAM-INF"))
+                        {
+                            compList.Add(fileContent[i + 1]);
+
+                            i++;
+                        }
                     }
                 }
             }
@@ -455,7 +426,7 @@ namespace RT_Stream_App.Models
             {
                 return extractQuality(fileContent, (qualityToken - 1));
             }
-            return fileContent;
+            return compList;
         }
 
         public static string encryptDetails(string detail)
