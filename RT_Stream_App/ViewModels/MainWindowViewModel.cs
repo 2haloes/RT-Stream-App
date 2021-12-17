@@ -28,7 +28,7 @@ namespace RT_Stream_App.ViewModels
             appSettings = MainModel.SettingsLoad();
             ThemeList = MainModel.ThemesLoad();
             selectedTheme = ThemeList[appSettings.theme];
-            QualityList = new ObservableCollection<string>() { "240", "360", "480", "720", "1080", "4K" };
+            QualityList = new ObservableCollection<string>() { "270", "360", "540", "720", "1080", "4K" };
             selectedQuality = QualityList[appSettings.quality];
             Username = MainModel.decryptDetails(appSettings.username);
             Password = MainModel.decryptDetails(appSettings.password);

@@ -23,7 +23,7 @@ namespace RT_Stream_App.Models
         public const string siteURL = "https://svod-be.roosterteeth.com";
         public const string loginURL = "https://auth.roosterteeth.com/oauth/token";
         public static readonly string settingFile = (AppDomain.CurrentDomain.BaseDirectory + "settings.json");
-        public static string[] qualityList => new string[] { "240", "360", "480", "720", "1080", "4K" };
+        public static string[] qualityList => new string[] { "270", "360", "540", "720", "1080", "4K" };
 
         /// <summary>
         /// Loads the settings (Or creates the settings file on first load)
@@ -270,7 +270,7 @@ namespace RT_Stream_App.Models
             {
                 return null;
             }
-            File.WriteAllLines(AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8", streamFile);
+            File.WriteAllLines(AppDomain.CurrentDomain.BaseDirectory + "VideoLink.m3u8", fileToOpen);
             return toReturn;
         }
 
@@ -386,7 +386,7 @@ namespace RT_Stream_App.Models
             List<string> compList = new List<string>();
 
             // NOTE: I actually have no idea if the 4k is correct. It's borderline impossible to find a video with 4K
-            if (compList.Any(item => item.Contains(qualityList[qualityToken])))
+            if (fileContent.Any(item => item.Contains(qualityList[qualityToken])))
             {
                 for (int i = 0; i < fileContent.Count; i++)
                 {
@@ -394,27 +394,12 @@ namespace RT_Stream_App.Models
                     {
                         compList.Add(fileContent[i]);
 
-                        if (fileContent[i].Contains("-STREAM-INF"))
+                        if (fileContent[i].Contains("X-STREAM-INF"))
                         {
                             compList.Add(fileContent[i + 1]);
 
                             i++;
                         }
-                    }
-                }
-            }
-            else if (qualityToken == 0 && compList.Any(item => item.Contains("238")))
-            {
-                for (int i = 0; i < fileContent.Count; i++)
-                {
-                    if (fileContent[i].Contains("x" + qualityList[qualityToken] + ",") || fileContent[i].Contains("x238,"))
-                    {
-                        continue;
-                    }
-                    else if (fileContent[i].Contains("-STREAM-INF"))
-                    {
-                        fileContent.RemoveRange(i, 2);
-                        i--;
                     }
                 }
             }
