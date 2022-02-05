@@ -52,7 +52,8 @@ namespace RT_Stream_App.ViewModels
             SeasonLoadText = "";
             EpisodeTokenSource = new CancellationTokenSource();
             EpisodeToken = EpisodeTokenSource.Token;
-            LoadEpisodes = new DelegateCommand(async () => await LoadEpisodesAsync(EpisodeToken, 20));
+            LoadEpisodes = new DelegateCommand(async () => await LoadEpisodesAsync(EpisodeToken, 20, true));
+            LoadEpisodePage = new DelegateCommand(async () => await LoadEpisodesAsync(EpisodeToken, 20, false));
             ButtonEnable = false;
             ButtonText = "Select a video";
             VideoTokenSource = new CancellationTokenSource();
@@ -64,6 +65,7 @@ namespace RT_Stream_App.ViewModels
             LoginAlready = false;
             RecentImage = new Bitmap(AssetManager.GetManifestResourceStream("RT_Stream_App.Assets.recent.png"));
             LoadCompanies.Execute(null);
+            PageList = null;
         }
         #region Global variables
         private bool _loginAlready;
@@ -136,6 +138,7 @@ namespace RT_Stream_App.ViewModels
         private CancellationToken _seasonToken;
         private CancellationTokenSource _seasonTokenSource;
         private ICommand _loadEpisodes;
+        private ICommand _loadEpisodePage;
         private ObservableCollection<seasons.seasonData> _seasonList;
         private seasons.seasonData _selectedSeason;
         private string _seasonLoadText;
@@ -144,6 +147,7 @@ namespace RT_Stream_App.ViewModels
         public CancellationToken SeasonToken { get => _seasonToken; set => SetField(ref _seasonToken, value); }
         public CancellationTokenSource SeasonTokenSource { get => _seasonTokenSource; set => SetField(ref _seasonTokenSource, value); }
         public ICommand LoadEpisodes { get => _loadEpisodes; set => SetField(ref _loadEpisodes, value); }
+        public ICommand LoadEpisodePage { get => _loadEpisodePage; set => SetField(ref _loadEpisodePage, value); }
         public ObservableCollection<seasons.seasonData> SeasonList { get => _seasonList; set => SetField(ref _seasonList, value); }
         public seasons.seasonData selectedSeason { get => _selectedSeason; set { SetField(ref _selectedSeason, value); OnPropertyChanged("SeasonPlaceholderText"); CancelTokens(3); LoadEpisodes.Execute(null); } }
         public string SeasonLoadText { get => _seasonLoadText; set => SetField(ref _seasonLoadText, value); }
@@ -160,13 +164,13 @@ namespace RT_Stream_App.ViewModels
         private ObservableCollection<int> _pageList;
 
         public bool EpisodeLoadText { get => _episodeLoadText; set => SetField(ref _episodeLoadText, value); }
-        public bool PagePlaceholderText { get { return PageNumber == 0 ? true : false; } }
+        public bool PagePlaceholderText { get { return PageList == null ? true : false; } }
         public CancellationToken EpisodeToken { get => _episodeToken; set => SetField(ref _episodeToken, value); }
         public CancellationTokenSource EpisodeTokenSource { get => _episodeTokenSource; set => SetField(ref _episodeTokenSource, value); }
         public episodes.episodeData selectedEpisode { get => _selectedEpisode; set { SetField(ref _selectedEpisode, value); CancelTokens(5); LoadVideo.Execute(null); } }
         public ICommand LoadVideo { get => _loadVideo; set => SetField(ref _loadVideo, value); }
         public int PageCountNumber { get => appSettings.page_length; set { appSettings.page_length = value; MainModel.SavePageCount(appSettings); } }
-        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodes.Execute(null); } }
+        public int PageNumber { get => _pageNumber; set { SetField(ref _pageNumber, value); CancelTokens(4); OnPropertyChanged("PagePlaceholderText"); LoadEpisodePage.Execute(null); } }
         public ObservableCollection<episodes.episodeData> EpisodeList { get => _episodeList; set => SetField(ref _episodeList, value); }
         public ObservableCollection<int> PageList { get => _pageList; set => SetField(ref _pageList, value); }
         #endregion
@@ -274,7 +278,7 @@ namespace RT_Stream_App.ViewModels
             selectedSeason = SeasonList[0];
         }
 
-        public async Task LoadEpisodesAsync(CancellationToken ct, int pageCount)
+        public async Task LoadEpisodesAsync(CancellationToken ct, int pageCount, bool updateList)
         {
             if (selectedSeason == null)
             {
@@ -301,7 +305,11 @@ namespace RT_Stream_App.ViewModels
             {
                 return;
             }
-            PageList = new ObservableCollection<int>(Enumerable.Range(1, (tmpEpisodes.total_results / pageCount)));
+            if (updateList)
+            {
+                PageList = new ObservableCollection<int>(Enumerable.Range(1, (tmpEpisodes.total_results / pageCount)));
+                OnPropertyChanged("PagePlaceholderText");
+            }
             // After this, thumbnails will display as they load
             EpisodeList = tmpEpisodes.data;
             SeasonLoadText = "Loading Thumbnails";
