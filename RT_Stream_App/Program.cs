@@ -1,6 +1,4 @@
-﻿using System;
-using Avalonia;
-using Avalonia.Logging.Serilog;
+﻿using Avalonia;
 using RT_Stream_App.ViewModels;
 using RT_Stream_App.Views;
 

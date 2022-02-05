@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-    <ApplicationIcon>Rooster.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+	<RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <ApplicationIcon>Assets/Rooster.ico</ApplicationIcon>
     <Version>1.0.0</Version>
     <Authors>Rhys Henson</Authors>
     <Company>N/A</Company>
@@ -13,6 +14,8 @@
     <RepositoryUrl>https://github.com/2haloes/RT-Stream-App.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageReleaseNotes>Full Release. VLC media player suggested to be installed</PackageReleaseNotes>
+    <DebugType>embedded</DebugType>
+    <PackageLicenseFile>C:\Users\Access Account\source\repos\2haloes\RT-Stream-App\LICENSE</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
@@ -24,22 +27,27 @@
     <EmbeddedResource Include="Assets\*" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.12" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
-    <PackageReference Include="NETCore.Encrypt" Version="2.0.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Prism.Core" Version="7.2.0.1422" />
+    <None Remove="recent.png" />
+    <None Remove="refresh.png" />
+    <None Remove="Rooster.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="recent.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="refresh.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Rooster.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="Avalonia" Version="0.10.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+    <PackageReference Include="NETCore.Encrypt" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Assets\recent.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Assets\refresh.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Assets\Rooster.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

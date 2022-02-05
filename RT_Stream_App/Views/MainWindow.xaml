@@ -107,7 +107,7 @@
             </Grid.ColumnDefinitions>
           <TextBlock Grid.Column="0" Text="{Binding SeasonLoadText}"  Margin="20,0,20,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
           <TextBlock Grid.Column="1" Text="Page" IsVisible="{Binding PagePlaceholderText}"  Margin="0,5,0,0" HorizontalAlignment="Center"></TextBlock>
-          <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></ComboBox>
+          <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" Items="{Binding PageList}" IsVisible="{Binding !PagePlaceholderText}" SelectedItem="{Binding PageNumber}" VerticalAlignment="Top" Height="30"></ComboBox>
           <Button Grid.Column="0" Command="{Binding LoadEpisodes}" Classes="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,0,5,0" Width="28" Height="28">
             <Image Source="{Binding RefreshIcon}" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
           </Button>
