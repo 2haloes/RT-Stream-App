@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace RT_Stream_App.ViewModels
     {
         public MainWindowViewModel()
         {
+            var AssetManager = this.GetType().Assembly;
             ErrorText = "";
             appSettings = MainModel.SettingsLoad();
             ThemeList = MainModel.ThemesLoad();
@@ -60,7 +62,7 @@ namespace RT_Stream_App.ViewModels
             LoginTmp = new DelegateCommand(() => SaveLoginTmp());
             LoginSave = new DelegateCommand(() => SaveLogin());
             LoginAlready = false;
-            RecentImage = new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "recent.png");
+            RecentImage = new Bitmap(AssetManager.GetManifestResourceStream("RT_Stream_App.Assets.recent.png"));
             LoadCompanies.Execute(null);
         }
         #region Global variables
@@ -79,7 +81,8 @@ namespace RT_Stream_App.ViewModels
         private bool _usePlayer;
         private themes _selectedTheme;
 
-        public Bitmap RefreshIcon => new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "refresh.png");
+        public Assembly AssetManager => this.GetType().Assembly;
+        public Bitmap RefreshIcon => new Bitmap(AssetManager.GetManifestResourceStream("RT_Stream_App.Assets.refresh.png"));
         public bool LoginAlready { get => _loginAlready; set => SetField(ref _loginAlready, value); }
         // This is passed to all methods that download (for API and video link calls). It is also able to store information which is how the Temp Login feature works
         public HttpClient websiteClient { get => _websiteClient; set => SetField(ref _websiteClient, value); }
@@ -95,7 +98,7 @@ namespace RT_Stream_App.ViewModels
         public bool UsePlayerDisplay { get => _usePlayerDisplay; set => SetField(ref _usePlayerDisplay, value); }
         public bool UsePlayer { get => _usePlayer; set { SetField(ref _usePlayer, value); appSettings.usePlayer = _usePlayer; MainModel.SavePlayerUse(appSettings); } }
         public themes selectedTheme { get => _selectedTheme; set { SetField(ref _selectedTheme, value); appSettings.theme = ThemeList.IndexOf(_selectedTheme); MainModel.SaveTheme(appSettings); } }
-        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(new Bitmap(AppDomain.CurrentDomain.BaseDirectory + "Rooster.ico"));
+        public Avalonia.Controls.WindowIcon ProgramIcon => new Avalonia.Controls.WindowIcon(AssetManager.GetManifestResourceStream("RT_Stream_App.Assets.Rooster.ico"));
         #endregion
 
         #region Companies variables
